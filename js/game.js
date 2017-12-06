@@ -1,20 +1,33 @@
 class Game {
-    constructor() {
+    constructor(messenger) {
+        this.messenger = messenger;
+
         this.playerName = "dexter";
         this.server = null;
 
+        this.mapData = null;
+
+        this._observe();
         this._loadData();
     }
 
 
     /* Private methods */
 
+    // observe messages
+    _observe() {
+        this.messenger.observe(MESSAGES.PROPERTY_PURCHASED, data => {
+            let square = this.mapData.squares[data.propertyId];
+            console.log(data.playerId, "purchased", square.propertyName, "for $" + square.price);
+        });
+    }
+
     // load json data
     _loadData() {
         $.getJSON(
             'data/international.json',
             data => {
-                // mapData = data;
+                this.mapData = data;
 
                 // exit if data is invalid
                 if (this._isDataInvalid(data)) {
@@ -25,7 +38,7 @@ class Game {
                 this._constructSquares(data.squares, data.propertyCodes);
 
                 // initialize server
-                this.server = new Server(data);
+                this.server = new Server(data, this.messenger);
                 this.server.addNewPlayer(this.playerName);
 
                 // initialize roll dice audio

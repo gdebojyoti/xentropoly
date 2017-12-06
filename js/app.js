@@ -1,3 +1,5 @@
+var messenger;
+
 $(function() {
     // var socket = io.connect('https://monopoly-backend.herokuapp.com/');
     // var socket = io.connect('http://localhost:3000/');
@@ -7,5 +9,13 @@ $(function() {
     //     el.innerHTML = 'Server time: ' + timeString;
     // });
 
-    let game = new Game();
+    messenger = new Messenger();
+    let game = new Game(messenger);
+
+    window.requestAnimationFrame(step);
+
+    function step () {
+        messenger.update();
+        window.requestAnimationFrame(step);
+    }
 });

@@ -1,8 +1,10 @@
 /* List of functions that are actually going to be running in the server side (node) */
 
 class Server {
-    constructor(data) {
+    constructor(data, messenger) {
         this.mapData = data;
+        this.messenger = messenger;
+
         this.players = {};
     }
 
@@ -40,7 +42,8 @@ class Server {
 
         // move player to computed position
         this.players[playerId].moveToPosition(newPosition);
-        console.log(spaces, newPosition);
+
+        this._executeSquare(newPosition, playerId);
     }
 
 
@@ -65,7 +68,7 @@ class Server {
     }
 
     // get random integer between 2 & 12
-    _rollDice(playerId) {
+    _rollDice() {
         let dice1 = this._getRandomInt(1, 6),
             dice2 = this._getRandomInt(1, 6);
 
@@ -75,5 +78,39 @@ class Server {
     // generate random integer between "min" & "max" limits (inclusive)
     _getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // execute whatever is on square
+    _executeSquare(squareId, playerId) {
+        // get details of square
+        let squareDetails = this.mapData.squares[squareId];
+        switch (squareDetails.type) {
+            // for property square: if unowned, opt to buy; if owned by others, pay rent
+            case "PROPERTY":
+                if (!squareDetails.owner) {
+                    // offer player to buy property
+                    let propertyBought = this.players[playerId].buyProperty(squareDetails.propertyName, squareDetails.price);
+                    if (propertyBought) {
+                        // assign property to player
+                        squareDetails.owner = playerId;
+                        // deduct funds from player
+                        this.players[playerId].removeFunds(squareDetails.price);
+
+                        this.messenger.send(MESSAGES.PROPERTY_PURCHASED, {
+                            playerId: playerId,
+                            propertyId: squareId
+                        });
+                    }
+                } else if (squareDetails.owner !== playerId) {
+                    let rent = squareDetails.rent;
+                    console.log("Pay rent:", rent);
+                    this.players[playerId].removeFunds(rent);
+                }
+
+                console.log(this.players[playerId]);
+                break;
+            default:
+                console.log(squareDetails);
+        }
     }
 }

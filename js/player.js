@@ -21,6 +21,16 @@ class Player {
         });
     }
 
+    // will the user buy property
+    buyProperty(name, price) {
+        return confirm("Buy " + name + " for $" + price + "?");
+    }
+
+    // remove funds from player
+    removeFunds(amount) {
+        this.cash -= amount;
+    }
+
 
     /* Private methods */
 
