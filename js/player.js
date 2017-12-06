@@ -4,13 +4,14 @@ class Player {
         this.cash = 1500;
     }
 
-    // move the player by certain number of "spaces"
-    moveToPositionBy(spaces) {
-        this.position += spaces;
+    // get current position of player
+    getCurrentPosition() {
+        return this.position;
+    }
 
-        if (this.position > 39) {
-            this.position -= 40;
-        }
+    // move the player by certain number of "spaces"
+    moveToPosition(squareId) {
+        this.position = squareId;
 
         let coods = this._fetchSquareCenterCoordinates(this.position);
 
@@ -18,8 +19,6 @@ class Player {
             "left": coods[0] + "px",
             "top": coods[1] + "px"
         });
-
-        console.log(spaces, this.position);
     }
 
 

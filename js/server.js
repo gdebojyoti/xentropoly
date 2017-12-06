@@ -17,7 +17,7 @@ class Server {
 
         // initialize new player and move it to position 0
         this.players[playerId] = new Player();
-        this.players[playerId].moveToPositionBy(0);
+        this.players[playerId].moveToPosition(0);
 
         console.log(this);
     }
@@ -29,8 +29,18 @@ class Server {
             return;
         }
 
+        // get sum of 2 dice rolls
         let spaces = this._rollDice();
-        this.players[playerId].moveToPositionBy(spaces);
+
+        // add "spaces" to player's current position; after crossing 39, player goes to 0
+        let newPosition = this.players[playerId].getCurrentPosition() + spaces;
+        if (newPosition > 39) {
+            newPosition -= 40;
+        }
+
+        // move player to computed position
+        this.players[playerId].moveToPosition(newPosition);
+        console.log(spaces, newPosition);
     }
 
 
