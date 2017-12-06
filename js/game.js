@@ -42,7 +42,7 @@ class Game {
                 this.server.addNewPlayer(this.playerName);
 
                 // initialize roll dice audio
-                let rollDiceAudio = new Audio("assets/audio/rollDice.mp3");
+                let rollDiceAudio = new Audio("assets/audio/rolldice.mp3");
 
                 // roll dice on clicking #0 and play sound
                 $("[data-square-id=0]").on("click", () => {
