@@ -59,6 +59,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 
         <script src="js/app.js"></script>
+        <script src="js/game.js"></script>
         <script src="js/player.js"></script>
         <script src="js/server.js"></script>
     </body>
