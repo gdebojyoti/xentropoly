@@ -62,7 +62,7 @@
 
         <script src="js/enums/messages.js"></script>
 
-        <script src="js/services/SocketService.js"></script>
+        <script src="js/services/socketService.js"></script>
 
         <script src="js/app.js"></script>
         <script src="js/messenger.js"></script>
