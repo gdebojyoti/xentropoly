@@ -58,12 +58,13 @@
         <script src="js/jquery-3.2.1.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 
-        <script src="js/app.js"></script>
+        <script src="js/env.js"></script>
 
         <script src="js/enums/messages.js"></script>
 
         <script src="js/services/SocketService.js"></script>
 
+        <script src="js/app.js"></script>
         <script src="js/messenger.js"></script>
         <script src="js/game.js"></script>
         <script src="js/player.js"></script>

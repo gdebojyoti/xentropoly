@@ -1,6 +1,6 @@
 class SocketService {
     constructor() {
-        this.socket = io.connect('http://localhost:3000/');
+        this.socket = io.connect(ENV.BACKEND_URL);
 
         var el = document.getElementById('server-time');
         this.socket.on('time', function(timeString) {
