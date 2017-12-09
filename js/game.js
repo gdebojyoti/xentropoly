@@ -3,7 +3,9 @@ class Game {
         this.messenger = messenger;
         this.socketService = new SocketService();
 
-        this.playerName = "";
+        this.playerName = ""; // username of player
+        this.hostName = ""; // username of host player to join, if any
+
         this.server = null;
 
         this.mapData = null;
@@ -17,12 +19,18 @@ class Game {
 
     /* Private methods */
 
-    // fetch client name from URL, or create name from current timestamp
+    // fetch client name (or create name from current timestamp) and host name from URL
     _getClientDetails() {
-        let query = location.search;
-        query = query.substr(query.indexOf("=") + 1);
+        // parse search parameters in URL
+        let query = location.search.substr(location.search.indexOf("?") + 1).split("&"),
+            queries = {};
 
-        this.playerName = query || "p" + Date.now();
+        for (let i = 0; i < query.length; i++) {
+            queries[query[i].substr(0, query[i].indexOf("="))] = query[i].substr(query[i].indexOf("=") + 1);
+        }
+
+        this.playerName = queries.name || "p" + Date.now();
+        this.hostName = queries.join;
     }
 
     // observe messages
@@ -65,10 +73,13 @@ class Game {
                 $("#loader").fadeOut(200);
                 console.log("Ready to play!");
 
-                // host a new game
-                this.socketService.hostGame(this.playerName);
-                // // join game of another player
-                // this.socketService.joinGame(this.playerName, "D3XT3R");
+                if (this.hostName) {
+                    // join game of another player if host is available
+                    this.socketService.joinGame(this.playerName, this.hostName);
+                } else {
+                    // host a new game if no host name is provided
+                    this.socketService.hostGame(this.playerName);
+                }
             }
         );
     }
