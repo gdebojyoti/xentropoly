@@ -62,6 +62,8 @@
 
         <script src="js/enums/messages.js"></script>
 
+        <script src="js/services/SocketService.js"></script>
+
         <script src="js/messenger.js"></script>
         <script src="js/game.js"></script>
         <script src="js/player.js"></script>

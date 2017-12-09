@@ -1,11 +1,14 @@
 class Game {
     constructor(messenger) {
         this.messenger = messenger;
+        this.socketService = new SocketService();
 
-        this.playerName = "dexter";
+        this.playerName = "";
         this.server = null;
 
         this.mapData = null;
+
+        this._getClientDetails();
 
         this._observe();
         this._loadData();
@@ -13,6 +16,14 @@ class Game {
 
 
     /* Private methods */
+
+    // fetch client name from URL, or create name from current timestamp
+    _getClientDetails() {
+        let query = location.search;
+        query = query.substr(query.indexOf("=") + 1);
+
+        this.playerName = query || "p" + Date.now();
+    }
 
     // observe messages
     _observe() {
@@ -53,6 +64,11 @@ class Game {
                 // ready to play
                 $("#loader").fadeOut(200);
                 console.log("Ready to play!");
+
+                // host a new game
+                this.socketService.hostGame(this.playerName);
+                // // join game of another player
+                // this.socketService.joinGame(this.playerName, "D3XT3R");
             }
         );
     }
