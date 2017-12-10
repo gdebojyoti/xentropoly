@@ -39,6 +39,9 @@ class Game {
             let square = this.mapData.squares[data.propertyId];
             console.log(data.playerId, "purchased", square.propertyName, "for $" + square.price);
         });
+        this.messenger.observe(MESSAGES.INVALID_TURN, () => {
+            alert("Wait for you turn, bitch!");
+        });
     }
 
     // load json data

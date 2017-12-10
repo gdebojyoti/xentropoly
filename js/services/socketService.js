@@ -14,6 +14,10 @@ class SocketService {
         this.socket.on("JOINED_SESSION", this._joinedSession);
 
         this.socket.on("PLAYER_MOVED", data => this._playerMoved(data));
+        this.socket.on("INVALID_TURN", () => this._invalidTurn());
+        this.socket.on("OFFER_BUY_PROPERTY", data => this._offerBuyProperty(data));
+        this.socket.on("PROPERTY_PURCHASED", data => this._propertyPurchased(data));
+        this.socket.on("RENT_PAID", data => this._rentPaid(data));
     }
 
 
@@ -58,5 +62,24 @@ class SocketService {
         this.messenger.send(MESSAGES.MOVE_TO_POSITION, {
             position: data.position
         });
+    }
+
+    _invalidTurn() {
+        this.messenger.send(MESSAGES.INVALID_TURN);
+    }
+
+    _offerBuyProperty(data) {
+        let propertyBought = confirm("Buy " + data.name + " for " + data.price + "?");
+        this.socket.emit("PROPERTY_PURCHASED", {
+            response: propertyBought
+        });
+    }
+
+    _propertyPurchased(data) {
+        console.info(data.msg);
+    }
+
+    _rentPaid(data) {
+        console.log(data.msg);
     }
 }
