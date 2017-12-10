@@ -1,7 +1,7 @@
 class Game {
     constructor(messenger) {
         this.messenger = messenger;
-        this.socketService = new SocketService();
+        this.socketService = new SocketService(messenger);
 
         this.playerName = ""; // username of player
         this.hostName = ""; // username of host player to join, if any
@@ -66,7 +66,7 @@ class Game {
                 // roll dice on clicking #0 and play sound
                 $("[data-square-id=0]").on("click", () => {
                     rollDiceAudio.play();
-                    this.server.triggerTurn(this.playerName);
+                    this.socketService.triggerTurn();
                 });
 
                 // ready to play

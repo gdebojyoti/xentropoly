@@ -18,7 +18,7 @@ class Server {
         }
 
         // initialize new player and move it to position 0
-        this.players[playerId] = new Player();
+        this.players[playerId] = new Player(this.messenger);
         this.players[playerId].moveToPosition(0);
 
         console.log(this);

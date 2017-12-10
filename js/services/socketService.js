@@ -1,5 +1,7 @@
 class SocketService {
-    constructor() {
+    constructor(messenger) {
+        this.messenger = messenger;
+
         this.socket = io.connect(ENV.BACKEND_URL);
 
         var el = document.getElementById('server-time');
@@ -10,6 +12,8 @@ class SocketService {
         this.socket.on("GAME_CREATED", this._gameCreated);
         this.socket.on("GAME_JOINED", this._gameJoined);
         this.socket.on("JOINED_SESSION", this._joinedSession);
+
+        this.socket.on("PLAYER_MOVED", data => this._playerMoved(data));
     }
 
 
@@ -28,6 +32,10 @@ class SocketService {
         });
     }
 
+    triggerTurn() {
+        this.socket.emit("TRIGGER_TURN");
+    }
+
 
     /* Priate methods */
 
@@ -41,5 +49,14 @@ class SocketService {
 
     _joinedSession(data) {
         console.log(data);
+    }
+
+    _playerMoved(data) {
+        console.log(data);
+
+        // trigger message to move player
+        this.messenger.send(MESSAGES.MOVE_TO_POSITION, {
+            position: data.position
+        });
     }
 }

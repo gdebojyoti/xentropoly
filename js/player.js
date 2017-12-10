@@ -1,7 +1,11 @@
 class Player {
-    constructor() {
+    constructor(messenger) {
+        this.messenger = messenger;
+
         this.position = 0;
         this.cash = 1500;
+
+        this._observe();
     }
 
     // get current position of player
@@ -33,6 +37,13 @@ class Player {
 
 
     /* Private methods */
+
+    // observe messages
+    _observe() {
+        this.messenger.observe(MESSAGES.MOVE_TO_POSITION, data => {
+            this.moveToPosition(data.position);
+        });
+    }
 
     // fetch coordinates of center of square
     _fetchSquareCenterCoordinates(squareId) {
