@@ -1,7 +1,7 @@
 var messenger;
 
 $(function() {
-    messenger = new Messenger();
+    messenger = new MessengerService();
     let game = new Game(messenger);
 
     window.requestAnimationFrame(step);

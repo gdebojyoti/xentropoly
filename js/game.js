@@ -57,6 +57,7 @@ class Game {
 
                 // initialize player
                 this.player = new Player(this.messenger);
+                this.player.moveToPosition(0);
 
                 // initialize roll dice audio
                 let rollDiceAudio = new Audio("assets/audio/rolldice.mp3");

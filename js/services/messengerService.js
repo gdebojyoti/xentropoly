@@ -1,4 +1,4 @@
-class Messenger {
+class MessengerService {
     constructor() {
         this.receivers = {};
         this.inbox = [];
