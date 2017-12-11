@@ -11,7 +11,7 @@ class SocketService {
 
         this.socket.on("GAME_CREATED", this._gameCreated);
         this.socket.on("GAME_JOINED", this._gameJoined);
-        this.socket.on("JOINED_SESSION", this._joinedSession);
+        this.socket.on("JOINED_SESSION", data => this._joinedSession(data));
 
         this.socket.on("PLAYER_MOVED", data => this._playerMoved(data));
         this.socket.on("INVALID_TURN", () => this._invalidTurn());
@@ -53,6 +53,11 @@ class SocketService {
 
     _joinedSession(data) {
         console.log(data);
+
+        // trigger message to move player
+        this.messenger.send(MESSAGES.JOINED_SESSION, {
+            playerId: data.playerId
+        });
     }
 
     _playerMoved(data) {
@@ -77,6 +82,11 @@ class SocketService {
 
     _propertyPurchased(data) {
         console.info(data.msg);
+
+        this.messenger.send(MESSAGES.PROPERTY_PURCHASED, {
+            playerId: data.buyer,
+            squareId: data.squareId
+        });
     }
 
     _rentPaid(data) {

@@ -6,9 +6,20 @@ class Game {
         this.playerName = ""; // username of player
         this.hostName = ""; // username of host player to join, if any
 
-        this.player = null;
+        this.player = null; // object for Player class
 
         this.mapData = null;
+
+        // store required details of all players
+        this.playerData = {};
+        this.samplePlayerDetails = {
+            name: "",
+            color: "",
+            cash: 0,
+            currentPosition: 0,
+            squares: []
+        };
+        this.playerColorCodes = ["red", "blue", "yellow", "green", "brown"];
 
         this._getClientDetails();
 
@@ -35,8 +46,14 @@ class Game {
 
     // observe messages
     _observe() {
+        this.messenger.observe(MESSAGES.JOINED_SESSION, data => {
+            this._updatePlayerList(data.playerId);
+        });
         this.messenger.observe(MESSAGES.INVALID_TURN, () => {
             alert("Wait for you turn, bitch!");
+        });
+        this.messenger.observe(MESSAGES.PROPERTY_PURCHASED, data => {
+            this._propertyPurchased(data);
         });
     }
 
@@ -141,5 +158,26 @@ class Game {
     _constructUtilitySquare (id) {
         // determine exact square from "id"
         var elm = $("[data-square-id=" + id + "]");
+    }
+
+    // TODO: Add host & previous player details to player list
+    // update player list; triggered when a new player joins the session
+    _updatePlayerList (playerId) {
+        let playerDetails = JSON.parse(JSON.stringify(this.samplePlayerDetails));
+        playerDetails.color = this.playerColorCodes.shift();
+        this.playerData[playerId] = playerDetails;
+    }
+
+    // assign property square to player
+    _propertyPurchased (data) {
+        // exit if player not found in player list
+        if (!this.playerData[data.playerId]) {
+            return;
+        }
+
+        let color = this.playerData[data.playerId].color;
+        // determine exact square from "id"
+        var elm = $("[data-square-id=" + data.squareId + "]");
+        elm.append("<div class='property-owner' style='background-color: " + color + "'></div>");
     }
 }
