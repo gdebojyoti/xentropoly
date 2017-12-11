@@ -6,7 +6,7 @@ class Game {
         this.playerName = ""; // username of player
         this.hostName = ""; // username of host player to join, if any
 
-        this.server = null;
+        this.player = null;
 
         this.mapData = null;
 
@@ -35,10 +35,6 @@ class Game {
 
     // observe messages
     _observe() {
-        this.messenger.observe(MESSAGES.PROPERTY_PURCHASED, data => {
-            let square = this.mapData.squares[data.propertyId];
-            console.log(data.playerId, "purchased", square.propertyName, "for $" + square.price);
-        });
         this.messenger.observe(MESSAGES.INVALID_TURN, () => {
             alert("Wait for you turn, bitch!");
         });
@@ -59,9 +55,8 @@ class Game {
                 // design all squares
                 this._constructSquares(data.squares, data.propertyCodes);
 
-                // initialize server
-                this.server = new Server(data, this.messenger);
-                this.server.addNewPlayer(this.playerName);
+                // initialize player
+                this.player = new Player(this.messenger);
 
                 // initialize roll dice audio
                 let rollDiceAudio = new Audio("assets/audio/rolldice.mp3");
