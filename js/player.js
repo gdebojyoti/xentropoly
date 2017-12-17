@@ -2,7 +2,7 @@ class Player {
     constructor(messenger) {
         this.messenger = messenger;
 
-        this.position = 0;
+        this.position = -1;
         this.cash = 1500;
 
         this._observe();
@@ -15,14 +15,19 @@ class Player {
 
     // move the player by certain number of "spaces"
     moveToPosition(squareId) {
-        this.position = squareId;
+        let oldPosition = this.position,
+            newPosition = squareId,
+            diff = (newPosition - oldPosition >= 0) ? (newPosition - oldPosition) : (40 + newPosition - oldPosition);
 
-        let coods = this._fetchSquareCenterCoordinates(this.position);
-
-        $("#player").css({
-            "left": coods[0] + "px",
-            "top": coods[1] + "px"
-        });
+        let moveTimer = setInterval(() => {
+            if (diff > 0) {
+                this._moveBySingleSquare();
+                diff--;
+            } else {
+                clearInterval(moveTimer);
+                moveTimer = null;
+            }
+        }, 400);
     }
 
     // will the user buy property
@@ -42,6 +47,17 @@ class Player {
     _observe() {
         this.messenger.observe(MESSAGES.MOVE_TO_POSITION, data => {
             this.moveToPosition(data.position);
+        });
+    }
+
+    _moveBySingleSquare() {
+        this.position = (this.position === 39) ? 0 : this.position + 1;
+
+        let coods = this._fetchSquareCenterCoordinates(this.position);
+
+        $("#player").css({
+            "left": coods[0] + "px",
+            "top": coods[1] + "px"
         });
     }
 
