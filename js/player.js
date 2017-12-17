@@ -1,11 +1,14 @@
 class Player {
-    constructor(messenger) {
+    constructor(name, color, messenger) {
         this.messenger = messenger;
 
+        this.name = name;
         this.position = -1;
+        this.color = color;
         this.cash = 1500;
+        this.squares = [];
 
-        this._observe();
+        this._initializePlayerMarker();
     }
 
     // get current position of player
@@ -18,6 +21,8 @@ class Player {
         let oldPosition = this.position,
             newPosition = squareId,
             diff = (newPosition - oldPosition >= 0) ? (newPosition - oldPosition) : (40 + newPosition - oldPosition);
+
+        console.log("From", oldPosition, "to", newPosition);
 
         let moveTimer = setInterval(() => {
             if (diff > 0) {
@@ -43,19 +48,19 @@ class Player {
 
     /* Private methods */
 
-    // observe messages
-    _observe() {
-        this.messenger.observe(MESSAGES.MOVE_TO_POSITION, data => {
-            this.moveToPosition(data.position);
-        });
+    // create DOM element for player marker, store it inside #players
+    _initializePlayerMarker() {
+        let playerDomElm = "<div data-player='" + this.name + "' class='player' style='box-shadow: 0 0 0 2px #000, inset 0 0 0 2px " + this.color + ";'></div>";
+        $("#players").append(playerDomElm);
     }
 
+    // move player by one step at a time
     _moveBySingleSquare() {
         this.position = (this.position === 39) ? 0 : this.position + 1;
 
         let coods = this._fetchSquareCenterCoordinates(this.position);
 
-        $("#player").css({
+        $("[data-player=" + this.name + "]").css({
             "left": coods[0] + "px",
             "top": coods[1] + "px"
         });

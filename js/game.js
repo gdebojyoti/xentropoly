@@ -11,7 +11,7 @@ class Game {
         this.mapData = null;
 
         // store required details of all players
-        this.playerData = {};
+        this.playersData = {};
         this.samplePlayerDetails = {
             name: "",
             color: "",
@@ -55,6 +55,10 @@ class Game {
         this.messenger.observe(MESSAGES.PROPERTY_PURCHASED, data => {
             this._propertyPurchased(data);
         });
+
+        this.messenger.observe(MESSAGES.MOVE_TO_POSITION, data => {
+            this._movePlayerToPosition(data);
+        });
     }
 
     // load json data
@@ -71,10 +75,6 @@ class Game {
 
                 // design all squares
                 this._constructSquares(data.squares, data.propertyCodes);
-
-                // initialize player
-                this.player = new Player(this.messenger);
-                this.player.moveToPosition(0);
 
                 // initialize roll dice audio
                 let rollDiceAudio = new Audio("assets/audio/rolldice.mp3");
@@ -163,19 +163,28 @@ class Game {
     // TODO: Add host & previous player details to player list
     // update player list; triggered when a new player joins the session
     _updatePlayerList (playerId) {
-        let playerDetails = JSON.parse(JSON.stringify(this.samplePlayerDetails));
-        playerDetails.color = this.playerColorCodes.shift();
-        this.playerData[playerId] = playerDetails;
+        let playerDetails = new Player(playerId, this.playerColorCodes.shift(), this.messenger);
+        playerDetails.moveToPosition(0);
+        this.playersData[playerId] = playerDetails;
+    }
+
+    // move a player to position
+    _movePlayerToPosition (data) {
+        if (this.playersData[data.player]) {
+            this.playersData[data.player].moveToPosition(data.position);
+        } else {
+            console.log("Player not found", data.player);
+        }
     }
 
     // assign property square to player
     _propertyPurchased (data) {
         // exit if player not found in player list
-        if (!this.playerData[data.playerId]) {
+        if (!this.playersData[data.playerId]) {
             return;
         }
 
-        let color = this.playerData[data.playerId].color;
+        let color = this.playersData[data.playerId].color;
         // determine exact square from "id"
         var elm = $("[data-square-id=" + data.squareId + "]");
         elm.append("<div class='property-owner' style='background-color: " + color + "'></div>");

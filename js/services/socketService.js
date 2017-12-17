@@ -65,6 +65,7 @@ class SocketService {
 
         // trigger message to move player
         this.messenger.send(MESSAGES.MOVE_TO_POSITION, {
+            player: data.player,
             position: data.position
         });
     }

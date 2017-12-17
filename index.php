@@ -15,7 +15,7 @@
 
         <div id="loader" class="loader">Loading..</div>
 
-        <div id="player" class="player"></div>
+        <div id="players"></div>
 
         <div class="board">
             <div id="server-time" data-square-id="0" class="square go-block" title="Click me to roll dice (temporary)">#0 GO</div>
