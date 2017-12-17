@@ -1,14 +1,15 @@
 class Player {
-    constructor(name, color, messenger) {
+    constructor(player, messenger) {
         this.messenger = messenger;
 
-        this.name = name;
+        this.name = player.name;
+        this.color = player.color;
+        this.cash = player.cash || 1500;
         this.position = -1;
-        this.color = color;
-        this.cash = 1500;
         this.squares = [];
 
         this._initializePlayerMarker();
+        this.moveToPosition(player.position);
     }
 
     // get current position of player

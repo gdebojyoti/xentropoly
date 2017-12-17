@@ -6,8 +6,6 @@ class Game {
         this.playerName = ""; // username of player
         this.hostName = ""; // username of host player to join, if any
 
-        this.player = null; // object for Player class
-
         this.mapData = null;
 
         // store required details of all players
@@ -47,7 +45,7 @@ class Game {
     // observe messages
     _observe() {
         this.messenger.observe(MESSAGES.JOINED_SESSION, data => {
-            this._updatePlayerList(data.playerId);
+            this._updatePlayerList(data.players);
         });
         this.messenger.observe(MESSAGES.INVALID_TURN, () => {
             alert("Wait for you turn, bitch!");
@@ -160,12 +158,18 @@ class Game {
         var elm = $("[data-square-id=" + id + "]");
     }
 
-    // TODO: Add host & previous player details to player list
     // update player list; triggered when a new player joins the session
-    _updatePlayerList (playerId) {
-        let playerDetails = new Player(playerId, this.playerColorCodes.shift(), this.messenger);
-        playerDetails.moveToPosition(0);
-        this.playersData[playerId] = playerDetails;
+    _updatePlayerList (players) {
+        // add all new players, including host, to playersData
+        Object.keys(players).forEach(playerId => {
+            if (!this.playersData[playerId]) {
+                players[playerId].name = playerId;
+                players[playerId].color = this.playerColorCodes.shift();
+
+                let playerDetails = new Player(players[playerId], this.messenger);
+                this.playersData[playerId] = playerDetails;
+            }
+        });
     }
 
     // move a player to position
