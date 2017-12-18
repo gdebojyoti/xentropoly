@@ -57,6 +57,10 @@ class Game {
             this._rentPaid(data);
         });
 
+        this.messenger.observe(MESSAGES.TRADE_PROPOSAL_RECEIVED, data => {
+            this._tradeProposalReceived(data);
+        });
+
         this.messenger.observe(MESSAGES.MOVE_TO_POSITION, data => {
             this._movePlayerToPosition(data);
         });
@@ -84,6 +88,19 @@ class Game {
                 $("[data-square-id=0]").on("click", () => {
                     rollDiceAudio.play();
                     this.socketService.triggerTurn();
+                });
+
+                // propose trade on clicking #1
+                $("[data-square-id=1]").on("click", () => {
+                    let offer = {
+                        squares: [0, 1],
+                        cash: 23
+                    };
+                    let receive = {
+                        squares: [2, 5],
+                        cash: 300
+                    };
+                    this.socketService.proposeTrade("D3XT3RGRNDLWLD", offer, receive);
                 });
 
                 // ready to play
@@ -209,5 +226,15 @@ class Game {
 
         console.log(this.playersData[data.owner]);
         console.log(this.playersData[data.payee]);
+    }
+
+    _tradeProposalReceived (data) {
+        // ignore if proposal is not meant for current player
+        if (data.proposedTo !== this.playerName) {
+            return;
+        }
+
+        let proposalAccepted = confirm("Accept trade offer from " + data.proposedBy + "?");
+        this.socketService.tradeProposalResponded(proposalAccepted);
     }
 }

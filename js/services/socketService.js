@@ -18,6 +18,8 @@ class SocketService {
         this.socket.on("OFFER_BUY_PROPERTY", data => this._offerBuyProperty(data));
         this.socket.on("PROPERTY_PURCHASED", data => this._propertyPurchased(data));
         this.socket.on("RENT_PAID", data => this._rentPaid(data));
+
+        this.socket.on("TRADE_PROPOSAL_RECEIVED", data => this._tradeProposalReceived(data));
     }
 
 
@@ -38,6 +40,22 @@ class SocketService {
 
     triggerTurn() {
         this.socket.emit("TRIGGER_TURN");
+    }
+
+    // propose a trade with tradeWithPlayerId
+    proposeTrade(tradeWithPlayerId, offer, receive) {
+        this.socket.emit("TRADE_PROPOSAL_INITIATED", {
+            tradeWithPlayerId: tradeWithPlayerId,
+            offer: offer,
+            receive: receive
+        });
+    }
+
+    // proposal accepted or declined
+    tradeProposalResponded(isProposalAccepted) {
+        this.socket.emit("TRADE_PROPOSAL_RESPONDED", {
+            response: isProposalAccepted
+        });
     }
 
 
@@ -98,6 +116,18 @@ class SocketService {
             owner: data.owner,
             payee: data.payee,
             rent: data.rent
+        });
+    }
+
+    _tradeProposalReceived(data) {
+        console.info(data.msg);
+        console.log(data);
+
+        this.messenger.send(MESSAGES.TRADE_PROPOSAL_RECEIVED, {
+            proposedBy: data.proposedBy,
+            proposedTo: data.proposedTo,
+            offer: data.offer,
+            receive: data.receive
         });
     }
 }
