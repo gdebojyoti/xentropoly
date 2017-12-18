@@ -53,6 +53,9 @@ class Game {
         this.messenger.observe(MESSAGES.PROPERTY_PURCHASED, data => {
             this._propertyPurchased(data);
         });
+        this.messenger.observe(MESSAGES.RENT_PAID, data => {
+            this._rentPaid(data);
+        });
 
         this.messenger.observe(MESSAGES.MOVE_TO_POSITION, data => {
             this._movePlayerToPosition(data);
@@ -85,7 +88,6 @@ class Game {
 
                 // ready to play
                 $("#loader").fadeOut(200);
-                console.log("Ready to play!");
 
                 if (this.hostName) {
                     // join game of another player if host is available
@@ -166,7 +168,7 @@ class Game {
                 players[playerId].name = playerId;
                 players[playerId].color = this.playerColorCodes.shift();
 
-                let playerDetails = new Player(players[playerId], this.messenger);
+                let playerDetails = new Player(players[playerId]);
                 this.playersData[playerId] = playerDetails;
             }
         });
@@ -188,9 +190,24 @@ class Game {
             return;
         }
 
+        // deduct price of property from playerId
+        let price = this.mapData.squares[data.squareId].price;
+        this.playersData[data.playerId].removeFunds(price);
+
         let color = this.playersData[data.playerId].color;
         // determine exact square from "id"
         var elm = $("[data-square-id=" + data.squareId + "]");
         elm.append("<div class='property-owner' style='background-color: " + color + "'></div>");
+
+        console.log(this.playersData[data.playerId]);
+    }
+
+    // rent paid by payee to owner
+    _rentPaid (data) {
+        this.playersData[data.owner].addFunds(data.rent);
+        this.playersData[data.payee].removeFunds(data.rent);
+
+        console.log(this.playersData[data.owner]);
+        console.log(this.playersData[data.payee]);
     }
 }

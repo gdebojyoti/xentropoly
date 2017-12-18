@@ -92,6 +92,12 @@ class SocketService {
     }
 
     _rentPaid(data) {
-        console.log(data.msg);
+        console.info(data.msg);
+
+        this.messenger.send(MESSAGES.RENT_PAID, {
+            owner: data.owner,
+            payee: data.payee,
+            rent: data.rent
+        });
     }
 }

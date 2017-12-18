@@ -1,7 +1,5 @@
 class Player {
-    constructor(player, messenger) {
-        this.messenger = messenger;
-
+    constructor(player) {
         this.name = player.name;
         this.color = player.color;
         this.cash = player.cash || 1500;
@@ -23,8 +21,6 @@ class Player {
             newPosition = squareId,
             diff = (newPosition - oldPosition >= 0) ? (newPosition - oldPosition) : (40 + newPosition - oldPosition);
 
-        console.log("From", oldPosition, "to", newPosition);
-
         let moveTimer = setInterval(() => {
             if (diff > 0) {
                 this._moveBySingleSquare();
@@ -39,6 +35,11 @@ class Player {
     // will the user buy property
     buyProperty(name, price) {
         return confirm("Buy " + name + " for $" + price + "?");
+    }
+
+    // add funds to player
+    addFunds(amount) {
+        this.cash += amount;
     }
 
     // remove funds from player
