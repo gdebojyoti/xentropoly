@@ -42,6 +42,12 @@ class SocketService {
         this.socket.emit("TRIGGER_TURN");
     }
 
+    propertyBuyOfferResponded(isPropertyPurchased) {
+        this.socket.emit("PROPERTY_PURCHASED", {
+            response: isPropertyPurchased
+        });
+    }
+
     // propose a trade with tradeWithPlayerId
     proposeTrade(tradeWithPlayerId, offer, receive) {
         this.socket.emit("TRADE_PROPOSAL_INITIATED", {
@@ -94,9 +100,8 @@ class SocketService {
     }
 
     _offerBuyProperty(data) {
-        let propertyBought = confirm("Buy " + data.name + " for " + data.price + "?");
-        this.socket.emit("PROPERTY_PURCHASED", {
-            response: propertyBought
+        this.messenger.send(MESSAGES.OFFER_BUY_PROPERTY, {
+            squareId: data.squareId
         });
     }
 

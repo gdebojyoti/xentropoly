@@ -50,6 +50,9 @@ class Game {
         this.messenger.observe(MESSAGES.INVALID_TURN, () => {
             alert("Wait for you turn, bitch!");
         });
+        this.messenger.observe(MESSAGES.OFFER_BUY_PROPERTY, data => {
+            this._offerBuyProperty(data);
+        });
         this.messenger.observe(MESSAGES.PROPERTY_PURCHASED, data => {
             this._propertyPurchased(data);
         });
@@ -198,6 +201,16 @@ class Game {
         } else {
             console.log("Player not found", data.player);
         }
+    }
+
+    // offer current player the chance to buy property at data.squareId
+    _offerBuyProperty (data) {
+        let propertyName = this.mapData.squares[data.squareId].propertyName;
+        let propertyPrice = this.mapData.squares[data.squareId].price;
+        let isPropertyPurchased = confirm("Buy " + propertyName + " for " + propertyPrice + "?");
+
+        // dispatch above decision via socket to server (and other players)
+        this.socketService.propertyBuyOfferResponded(isPropertyPurchased);
     }
 
     // assign property square to player
