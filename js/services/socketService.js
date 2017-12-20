@@ -13,6 +13,8 @@ class SocketService {
         this.socket.on("GAME_JOINED", this._gameJoined);
         this.socket.on("JOINED_SESSION", data => this._joinedSession(data));
 
+        this.socket.on("CHAT_MESSAGE_RECEIVED", data => this._chatMessageReceived(data));
+
         this.socket.on("PLAYER_MOVED", data => this._playerMoved(data));
         this.socket.on("INVALID_TURN", () => this._invalidTurn());
         this.socket.on("OFFER_BUY_PROPERTY", data => this._offerBuyProperty(data));
@@ -64,6 +66,13 @@ class SocketService {
         });
     }
 
+    // send chat message
+    sendChatMessage(msg) {
+        this.socket.emit("CHAT_MESSAGE_SENT", {
+            msg: msg
+        });
+    }
+
 
     /* Priate methods */
 
@@ -82,6 +91,13 @@ class SocketService {
         this.messenger.send(MESSAGES.JOINED_SESSION, {
             playerId: data.playerId,
             players: data.players
+        });
+    }
+
+    _chatMessageReceived(data) {
+        this.messenger.send(MESSAGES.CHAT_MESSAGE_RECEIVED, {
+            sender: data.sender,
+            msg: data.msg
         });
     }
 

@@ -2,6 +2,7 @@ class Game {
     constructor(messenger) {
         this.messenger = messenger;
         this.socketService = new SocketService(messenger);
+        this.uiService = new UiService(this.messenger, this.socketService);
 
         this.playerName = ""; // username of player
         this.hostName = ""; // username of host player to join, if any
@@ -20,6 +21,7 @@ class Game {
         this.playerColorCodes = ["red", "blue", "yellow", "green", "brown"];
 
         this._getClientDetails();
+        this.uiService.updateInfo(this.playerName);
 
         this._observe();
         this._loadData();

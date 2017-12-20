@@ -55,6 +55,14 @@
             ?>
         </div>
 
+        <div id="chat" class="chat">
+            <div class="chat-header">Game Chat</div>
+            <div class="chat-window">
+                <div id="chat-messages" class="chat-messages"></div>
+                <input id="chat-player-message" class="chat-player-message" placeholder="Type a message and press enter.."></div>
+            </div>
+        </div>
+
         <script src="js/libs/jquery-3.2.1.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 
@@ -64,6 +72,7 @@
 
         <script src="js/services/socketService.js"></script>
         <script src="js/services/messengerService.js"></script>
+        <script src="js/services/uiService.js"></script>
 
         <script src="js/app.js"></script>
         <script src="js/game.js"></script>
