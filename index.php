@@ -55,7 +55,7 @@
             ?>
         </div>
 
-        <div id="chat" class="chat">
+        <div id="chat" class="chat chat-inactive">
             <div class="chat-header">Game Chat</div>
             <div class="chat-window">
                 <div id="chat-messages" class="chat-messages"></div>
