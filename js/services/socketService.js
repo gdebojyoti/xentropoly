@@ -22,6 +22,9 @@ class SocketService {
         this.socket.on("RENT_PAID", data => this._rentPaid(data));
 
         this.socket.on("TRADE_PROPOSAL_RECEIVED", data => this._tradeProposalReceived(data));
+
+        this.socket.on("PROPERTY_MORTGAGED", data => this._propertyMortgaged(data));
+        this.socket.on("PROPERTY_UNMORTGAGED", data => this._propertyUnmortgaged(data));
     }
 
 
@@ -63,6 +66,20 @@ class SocketService {
     tradeProposalResponded(isProposalAccepted) {
         this.socket.emit("TRADE_PROPOSAL_RESPONDED", {
             response: isProposalAccepted
+        });
+    }
+
+    // request for a property to be mortgaged
+    requestMortgage(squareId) {
+        this.socket.emit("REQUEST_MORTGAGE", {
+            squareId: squareId
+        });
+    }
+
+    // request for a property mortgage to be paid off
+    requestUnmortgage(squareId) {
+        this.socket.emit("REQUEST_UNMORTGAGE", {
+            squareId: squareId
         });
     }
 
@@ -149,6 +166,24 @@ class SocketService {
             proposedTo: data.proposedTo,
             offer: data.offer,
             receive: data.receive
+        });
+    }
+
+    _propertyMortgaged(data) {
+        console.log(data.msg);
+
+        this.messenger.send(MESSAGES.PROPERTY_MORTGAGED, {
+            playerId: data.playerId,
+            squareId: data.squareId
+        });
+    }
+
+    _propertyUnmortgaged(data) {
+        console.log(data.msg);
+
+        this.messenger.send(MESSAGES.PROPERTY_UNMORTGAGED, {
+            playerId: data.playerId,
+            squareId: data.squareId
         });
     }
 }

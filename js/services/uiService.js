@@ -40,6 +40,16 @@ class UiService {
                 return false;
             }
         });
+
+        // request mortgage on clicking #2
+        $("[data-square-id=2]").on("click", () => {
+            this.socketService.requestMortgage(6);
+        });
+
+        // request to pay off mortgage on clicking #3
+        $("[data-square-id=3]").on("click", () => {
+            this.socketService.requestUnmortgage(6);
+        });
     }
 
     // show sent messages in chat window

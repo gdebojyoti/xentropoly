@@ -1,3 +1,7 @@
+Immediate::
+Complete trading system
+
+
 UI::
 Roll dice
 Finish turn
@@ -25,3 +29,9 @@ Pro level features::
 Mobile version (responsive)
 Facebook/ Google integration
 Facebook/ Google achievements API
+
+
+
+
+Testing needed for::
+Mortgage
