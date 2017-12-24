@@ -41,8 +41,8 @@ class UiService {
             }
         });
 
-        // request mortgage on clicking #2
-        $("[data-square-id=2]").on("click", () => {
+        // request mortgage on clicking "Mortgage" button
+        $("[data-control=mortgage]").on("click", () => {
             this.socketService.requestMortgage(6);
         });
 

@@ -15,7 +15,7 @@ html, body {
 
 body {
     font-family: arial;
-    background-color: #2c3e50;
+    background-image: linear-gradient(#ced6de, #9cadbe);
 }
 
 
@@ -32,6 +32,32 @@ body {
     line-height: 100vh;
     text-align: center;
     background-color: #fff;
+}
+
+
+/* control buttons (roll dice, trade, mortgage) */
+.controls {
+    width: 100%;
+    height: 70px;
+    padding: 40px 45px 0 45px;
+
+    /* background-color: #fff; */
+}
+
+.control-button {
+    display: block;
+    float: left;
+
+    height: 40px;
+    margin-right: 10px;
+    padding: 0 15px;
+    border-left: 5px solid #2980b9;
+
+    color: #fff;
+    line-height: 40px;
+    background-color: #3498db;
+
+    cursor: pointer;
 }
 
 
@@ -54,12 +80,22 @@ body {
 }
 
 
+/* container for board & chat */
+.board-and-chat {
+    width: 100%;
+    /* height: calc(100% - 70px - 150px); */
+    height: calc(100% - 70px);
+    padding: 40px 0 40px 40px;
+}
+
+
 /* board styles */
 
 .board {
-    width: 100%;
+    float: left;
+
+    width: calc(100% - 300px - 30px);
     height: 100%;
-    padding: 50px;
 }
 
 .square {
@@ -69,8 +105,12 @@ body {
     width: calc(100% / 11 - 10px);
     height: calc(25% - 2 * 5px);
     margin: 5px;
+    border-radius: 2px;
 
     background-color: #fff;
+
+    box-shadow: 0 0 3px rgba(0,0,0,0.5);
+    overflow: hidden;
 }
 .square.reverse-order {
     float: right;
@@ -126,25 +166,20 @@ body {
 }
 
 
-/* Chat */
+/* chat */
 
 .chat {
-    position: fixed;
-    right: 55px;
-    bottom: 0;
+    float: right;
 
     width: 300px;
-    height: 450px;
+    height: calc(100% - 10px);
+    margin: 5px 0;
     border-radius: 3px 3px 0 0;
 
     font-size: 13px;
 
-    box-shadow: 0 0 5px #333;
+    box-shadow: 0 0 3px rgba(0,0,0,0.5);
     overflow: hidden;
-}
-.chat.chat-inactive {
-    width: 200px;
-    height: 30px;
 }
 
 .chat-header {
@@ -246,7 +281,15 @@ body {
 }
 
 
-/* Samples */
+/* player details */
+
+.player-details {
+    width: 100%;
+    height: 150px;
+}
+
+
+/* samples */
 
 /*
 

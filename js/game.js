@@ -89,14 +89,14 @@ class Game {
                 // initialize roll dice audio
                 let rollDiceAudio = new Audio("assets/audio/rolldice.mp3");
 
-                // roll dice on clicking #0 and play sound
-                $("[data-square-id=0]").on("click", () => {
+                // roll dice on clicking "Roll dice" button and play sound
+                $("[data-control=roll]").on("click", () => {
                     rollDiceAudio.play();
                     this.socketService.triggerTurn();
                 });
 
-                // propose trade on clicking #1
-                $("[data-square-id=1]").on("click", () => {
+                // propose trade on clicking "Trade" button
+                $("[data-control=trade]").on("click", () => {
                     let offer = {
                         squares: [0, 1],
                         cash: 23
