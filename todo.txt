@@ -14,12 +14,12 @@ Player stats
 
 Priorities::
 Mortgage
+Bankruptcy
 Infrastructure, twist & treasure cards
 Houses
 
 
 Next level features::
-Bankruptcy
 Counter offers in trade
 Sell to bank
 Timer (time limit)

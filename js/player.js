@@ -15,6 +15,14 @@ class Player {
         return this.position;
     }
 
+    getCurrentCash() {
+        return this.cash;
+    }
+
+    getCurrentSquares() {
+        return this.squares;
+    }
+
     // move the player by certain number of "spaces"
     moveToPosition(squareId) {
         let oldPosition = this.position,
@@ -45,6 +53,13 @@ class Player {
     // remove funds from player
     removeFunds(amount) {
         this.cash -= amount;
+    }
+
+    // assign square to player
+    assignSquare(squareId) {
+        if (this.squares.indexOf(squareId) < 0) {
+            this.squares.push(squareId);
+        }
     }
 
 

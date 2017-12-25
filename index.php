@@ -69,7 +69,14 @@
             </div>
         </section>
 
-        <!-- <section class="player-details"></section> -->
+        <section id="all-player-details" class="all-player-details">
+            <h2>List of in-game players -</h2>
+            <!-- <div class="player-details" data-player-details="D3XT3R">
+                <span class="player-name">D3XT3R</span>
+                <span class="player-funds">1500</span>
+                <span class="player-squares">0, 1, 3</span>
+            </div> -->
+        </section>
 
         <script src="js/libs/jquery-3.2.1.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>

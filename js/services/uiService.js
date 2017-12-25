@@ -14,6 +14,29 @@ class UiService {
         this.playerName = playerName;
     }
 
+    // update details of a single player in the bottom panel
+    updatePlayerList(playerDetails) {
+        let elm = $("#all-player-details [data-player-details=" + playerDetails.name + "]");
+        if (elm[0]) {
+            if (playerDetails.cash) {
+                elm.children(".player-funds").html("Cash: $" + playerDetails.cash);
+            }
+            if (playerDetails.squares && playerDetails.squares.length) {
+                elm.children(".player-squares").html("Owns: " + playerDetails.squares.join(", "));
+            }
+        } else {
+            $("#all-player-details").append(`
+                <div class="player-details" data-player-details=` + playerDetails.name + `>
+                    <span class="player-name">` + playerDetails.name + `</span>
+                    ||
+                    <span class="player-funds">Cash: $` + playerDetails.cash + `</span>
+                    ||
+                    <span class="player-squares">Owns: ` + (playerDetails.squares && playerDetails.squares.length ? playerDetails.squares.join(", ") : "N/A") + `</span>
+                </div>
+            `);
+        }
+    }
+
 
     /* Private methods */
 

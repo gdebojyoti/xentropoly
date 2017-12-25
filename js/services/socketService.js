@@ -107,7 +107,8 @@ class SocketService {
         // trigger message to move player
         this.messenger.send(MESSAGES.JOINED_SESSION, {
             playerId: data.playerId,
-            players: data.players
+            players: data.players,
+            room: data.room
         });
     }
 

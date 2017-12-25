@@ -15,7 +15,7 @@ html, body {
 
 body {
     font-family: arial;
-    background-image: linear-gradient(#ced6de, #9cadbe);
+    background-image: linear-gradient(135deg, #ced6de, #9cadbe);
 }
 
 
@@ -83,8 +83,7 @@ body {
 /* container for board & chat */
 .board-and-chat {
     width: 100%;
-    /* height: calc(100% - 70px - 150px); */
-    height: calc(100% - 70px);
+    height: calc(100% - 70px - 150px);
     padding: 40px 0 40px 40px;
 }
 
@@ -283,9 +282,14 @@ body {
 
 /* player details */
 
-.player-details {
+.all-player-details {
     width: 100%;
     height: 150px;
+    padding: 0 50px 50px 50px;
+
+    color: #fff;
+    text-shadow: 0 0 2px #333;
+    font-weight: bold;
 }
 
 

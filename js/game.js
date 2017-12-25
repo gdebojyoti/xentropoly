@@ -48,6 +48,7 @@ class Game {
     _observe() {
         this.messenger.observe(MESSAGES.JOINED_SESSION, data => {
             this._updatePlayerList(data.players);
+            this._updatePlayerDetails(data);
         });
         this.messenger.observe(MESSAGES.INVALID_TURN, () => {
             alert("Wait for you turn, bitch!");
@@ -192,8 +193,19 @@ class Game {
 
                 let playerDetails = new Player(players[playerId]);
                 this.playersData[playerId] = playerDetails;
+
+                this.uiService.updatePlayerList(playerDetails);
             }
         });
+    }
+
+    _updatePlayerDetails (data) {
+        // assign owners of applicable squares
+        for (let square of data.room.squares) {
+            if (square.owner && this.playersData[square.owner]) {
+                this.playersData[square.owner].assignSquare(square.id);
+            }
+        }
     }
 
     // move a player to position
@@ -225,6 +237,15 @@ class Game {
         // deduct price of property from playerId
         let price = this.mapData.squares[data.squareId].price;
         this.playersData[data.playerId].removeFunds(price);
+
+        // assign square to player
+        this.playersData[data.playerId].assignSquare(data.squareId);
+
+        this.uiService.updatePlayerList({
+            name: data.playerId,
+            cash: this.playersData[data.playerId].getCurrentCash(),
+            squares: this.playersData[data.playerId].getCurrentSquares()
+        });
 
         let color = this.playersData[data.playerId].color;
         // determine exact square from "id"
