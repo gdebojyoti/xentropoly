@@ -17,6 +17,7 @@
             <button class="control-button" data-control="roll" title="Click me to roll dice">Roll dice</button>
             <button class="control-button" data-control="trade">Trade</button>
             <button class="control-button" data-control="mortgage">Mortgage</button>
+            <button class="control-button" data-control="unmortgage">Unmortgage</button>
         </section>
 
         <div id="players"></div>
@@ -76,6 +77,27 @@
                 <span class="player-funds">1500</span>
                 <span class="player-squares">0, 1, 3</span>
             </div> -->
+        </section>
+
+        <section id="modal" data-modal-type="mortgage-properties" class="modal-wrapper">
+            <div class="modal">
+                <h3>Mortgage your properties</h3>
+                <div data-my-properties class="mortgage-modal__property_list"></div>
+                <button data-modal-button="mortgage" class="modal-button modal-save">Mortgage</button>
+                <button data-modal-button="cancel" class="modal-button modal-cancel">Cancel</button>
+            </div>
+        </section>
+
+        <section id="modal" data-modal-type="unmortgage-properties" class="modal-wrapper show-modal_">
+            <div class="modal">
+                <h3>Payoff your mortgages</h3>
+                <div data-my-properties class="mortgage-modal__property_list">
+                    <div class="mortgage-modal__property property-mortgaged" data-property-id=3>Dhaka</div>
+                    <div class="mortgage-modal__property property-mortgaged" data-property-id=10>Helsinki</div>
+                </div>
+                <button data-modal-button="unmortgage" class="modal-button modal-save">Unmortgage</button>
+                <button data-modal-button="cancel" class="modal-button modal-cancel">Cancel</button>
+            </div>
         </section>
 
         <script src="js/libs/jquery-3.2.1.min.js"></script>

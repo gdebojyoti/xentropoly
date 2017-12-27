@@ -2,7 +2,8 @@ class Game {
     constructor(messenger) {
         this.messenger = messenger;
         this.socketService = new SocketService(messenger);
-        this.uiService = new UiService(this.messenger, this.socketService);
+        // NOTE: Do NOT pass instance of "this" to any service! Refactor UiService; use messengerService if required.
+        this.uiService = new UiService(this, this.messenger, this.socketService);
 
         this.playerName = ""; // username of player
         this.hostName = ""; // username of host player to join, if any
@@ -25,6 +26,16 @@ class Game {
 
         this._observe();
         this._loadData();
+    }
+
+    // NOTE: getMapData & getPlayerDetails are being used in UiService; the latter should not have access to Game
+
+    getMapData() {
+        return this.mapData;
+    }
+
+    getPlayerDetails() {
+        return this.playersData[this.playerName];
     }
 
 

@@ -1,10 +1,13 @@
 class UiService {
-    constructor(messengerService, socketService) {
+    constructor(game, messengerService, socketService) {
+        this.game = game;
         this.messengerService = messengerService;
         this.socketService = socketService;
 
         this.playerName = "";
         this.isChatWindowOpen = true;
+
+        this.propertiesForMortgage = [];
 
         this._observe();
         this._initUiElements();
@@ -64,15 +67,87 @@ class UiService {
             }
         });
 
-        // request mortgage on clicking "Mortgage" button
-        $("[data-control=mortgage]").on("click", () => {
-            this.socketService.requestMortgage(6);
+        this._initMortage();
+
+        // open unmortgage modal on clicking "Unmortgage" button
+        $("[data-control=unmortgage]").on("click", () => {
+            $("[data-modal-type=unmortgage-properties]").addClass("show-modal");
         });
 
-        // request to pay off mortgage on clicking #3
-        $("[data-square-id=3]").on("click", () => {
+        // request to pay off mortgage on clicking "Unmortgage" button in modal
+        $("[data-modal-type=unmortgage-properties] [data-modal-button=unmortgage]").on("click", () => {
+            console.log("Paying off mortgages...");
             this.socketService.requestUnmortgage(6);
         });
+
+        // close unmortgage modal
+        $("[data-modal-type=unmortgage-properties] [data-modal-button=cancel]").on("click", () => {
+            $("[data-modal-type=unmortgage-properties]").removeClass("show-modal");
+        });
+    }
+
+    // define mortgage modal behaviour and content
+    _initMortage() {
+
+        let _this = this; // use in "_closeMortgageModal" method
+
+        // open mortgage modal on clicking "Mortgage" button
+        $("[data-control=mortgage]").on("click", () => {
+            $("[data-modal-type=mortgage-properties]").addClass("show-modal");
+
+            this.propertiesForMortgage = [];
+
+            let playerDetails = this.game.getPlayerDetails(),
+                mapData = this.game.getMapData();
+
+            console.log(playerDetails, mapData);
+
+            // populate list of properties
+            for (let square of playerDetails.squares) {
+                $("[data-modal-type=mortgage-properties] [data-my-properties]")
+                        .append('<div class="mortgage-modal__property" data-property-id=' + square + '>' + mapData.squares[square].propertyName + '</div>');
+            }
+        });
+
+        // select/ deselect property to be mortgaged
+        $("[data-modal-type=mortgage-properties] [data-my-properties]").on("click", ".mortgage-modal__property", e => {
+            let prop = $(e.target),
+                propId = prop.attr("data-property-id");
+
+            let index = this.propertiesForMortgage.indexOf(propId);
+
+            if (index < 0) {
+                this.propertiesForMortgage.push(propId);
+                $(prop).addClass("property-mortgaged");
+            } else {
+                this.propertiesForMortgage.splice(index, 1);
+                $(prop).removeClass("property-mortgaged");
+            }
+        });
+
+        // request mortgage on clicking "Mortgage" button in modal
+        $("[data-modal-type=mortgage-properties] [data-modal-button=mortgage]").on("click", () => {
+            if (this.propertiesForMortgage.length) {
+                console.log("Mortgaging properties...", this.propertiesForMortgage);
+                this.socketService.requestMortgage(this.propertiesForMortgage);
+            }
+            _closeMortgageModal();
+        });
+
+        // cancel & close mortgage modal
+        $("[data-modal-type=mortgage-properties] [data-modal-button=cancel]").on("click", () => {
+            _closeMortgageModal();
+        });
+
+        function _closeMortgageModal () {
+            // hide modal
+            $("[data-modal-type=mortgage-properties]").removeClass("show-modal");
+            // empty array
+            _this.propertiesForMortgage = [];
+            // empty property list
+            $("[data-modal-type=mortgage-properties] [data-my-properties]").empty();
+        }
+
     }
 
     // show sent messages in chat window

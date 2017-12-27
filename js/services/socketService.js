@@ -70,9 +70,9 @@ class SocketService {
     }
 
     // request for a property to be mortgaged
-    requestMortgage(squareId) {
+    requestMortgage(squares) {
         this.socket.emit("REQUEST_MORTGAGE", {
-            squareId: squareId
+            squares: squares
         });
     }
 
