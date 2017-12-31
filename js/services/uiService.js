@@ -1,6 +1,5 @@
 class UiService {
-    constructor(game, messengerService, socketService) {
-        this.game = game;
+    constructor(messengerService, socketService) {
         this.messengerService = messengerService;
         this.socketService = socketService;
 
@@ -13,8 +12,15 @@ class UiService {
         this._initUiElements();
     }
 
-    updateInfo(playerName) {
+    initialize(playerName, mapData) {
+        console.log(mapData);
         this.playerName = playerName;
+
+        // design all squares
+        this._constructSquares(mapData.squares, mapData.propertyCodes);
+
+        // ready to play
+        $("#loader").fadeOut(200);
     }
 
     // update details of a single player in the bottom panel
@@ -40,17 +46,55 @@ class UiService {
         }
     }
 
+    // open mortgage modal, showing current player's list of properties that can be mortgaged
+    openMortgageModal(mapData, playerDetails) {
+        $("[data-modal-type=mortgage-properties]").addClass("show-modal");
+
+        this.propertiesForMortgage = [];
+
+        console.log(playerDetails, mapData);
+
+        // populate list of properties
+        for (let square of playerDetails.squares) {
+            $("[data-modal-type=mortgage-properties] [data-my-properties]")
+                    .append('<div class="mortgage-modal__property" data-property-id=' + square + '>' + mapData.squares[square].propertyName + '</div>');
+        }
+    }
+
+    // offer current player the chance to buy property at data.squareId
+    offerBuyProperty(propertyName, propertyPrice) {
+        let isPropertyPurchased = confirm("Buy " + propertyName + " for " + propertyPrice + "?");
+
+        // dispatch above decision via socket to server (and other players)
+        this.socketService.propertyBuyOfferResponded(isPropertyPurchased);
+    }
+
+    updateSquareOwner(squareId, color) {
+        // determine exact square from "id"
+        var elm = $("[data-square-id=" + squareId + "]");
+        elm.append("<div class='property-owner' style='background-color: " + color + "'></div>");
+    }
+
 
     /* Private methods */
 
     // observe messages
     _observe() {
-        this.messengerService.observe(MESSAGES.CHAT_MESSAGE_RECEIVED, data => {
+        this.messengerService.observe(MESSAGES.UI_CHAT_MESSAGE_RECEIVED, data => {
             this._showReceivedMessages(data);
         });
     }
 
     _initUiElements() {
+        // initialize roll dice audio
+        let rollDiceAudio = new Audio("assets/audio/rolldice.mp3");
+
+        // roll dice on clicking "Roll dice" button and play sound
+        $("[data-control=roll]").on("click", () => {
+            rollDiceAudio.play();
+            this.socketService.triggerTurn();
+        });
+
         $("#chat .chat-header").on("click", () => {
             $("#chat").toggleClass("chat-inactive");
         });
@@ -84,29 +128,29 @@ class UiService {
         $("[data-modal-type=unmortgage-properties] [data-modal-button=cancel]").on("click", () => {
             $("[data-modal-type=unmortgage-properties]").removeClass("show-modal");
         });
+
+        // // propose trade on clicking "Trade" button
+        // $("[data-control=trade]").on("click", () => {
+        //     let offer = {
+        //         squares: [0, 1],
+        //         cash: 23
+        //     };
+        //     let receive = {
+        //         squares: [2, 5],
+        //         cash: 300
+        //     };
+        //     this.socketService.proposeTrade("D3XT3RGRNDLWLD", offer, receive);
+        // });
     }
 
     // define mortgage modal behaviour and content
-    _initMortage() {
+    _initMortage () {
 
         let _this = this; // use in "_closeMortgageModal" method
 
         // open mortgage modal on clicking "Mortgage" button
         $("[data-control=mortgage]").on("click", () => {
-            $("[data-modal-type=mortgage-properties]").addClass("show-modal");
-
-            this.propertiesForMortgage = [];
-
-            let playerDetails = this.game.getPlayerDetails(),
-                mapData = this.game.getMapData();
-
-            console.log(playerDetails, mapData);
-
-            // populate list of properties
-            for (let square of playerDetails.squares) {
-                $("[data-modal-type=mortgage-properties] [data-my-properties]")
-                        .append('<div class="mortgage-modal__property" data-property-id=' + square + '>' + mapData.squares[square].propertyName + '</div>');
-            }
+            this.messengerService.send(MESSAGES.UI_OPEN_MORTGAGE_MODAL);
         });
 
         // select/ deselect property to be mortgaged
@@ -186,5 +230,55 @@ class UiService {
                 </div>
             `);
         }
+    }
+
+    // construct all squares in grid
+    _constructSquares (squares, propertyCodes) {
+        for (var i = 0, noOfSquares = 40; i < noOfSquares; i++) {
+            switch (squares[i].type) {
+                case "PROPERTY":
+                    this._constructPropertySquare(i, squares[i].propertyName, propertyCodes[squares[i].propertyGroupId].color, squares[i].price, squares[i].rent);
+                    break;
+                case "TREASURE":
+                    this._constructTreasureSquare(i);
+                    break;
+                default:
+                    $("[data-square-id=" + i + "]").html(squares[i].type);
+            }
+        }
+    }
+
+    _constructPropertySquare (id, name, color, price, rent) {
+        // determine exact square from "id"
+        var elm = $("[data-square-id=" + id + "]");
+
+        var contents = `
+        <div class='property-band' style='background-color: ` + color + `'></div>
+        <div class='property-name'>` + name + `</div>
+        <div class='property-price'>$` + price + ` / $` + rent + `</div>
+        `;
+
+        elm.html(contents);
+    }
+
+    _constructTreasureSquare (id) {
+        // determine exact square from "id"
+        var elm = $("[data-square-id=" + id + "]");
+
+        elm.css({
+            "background-color": "#ecf0f1"
+        });
+
+        // elm.html(contents);
+    }
+
+    _constructInfrastructureSquare (id) {
+        // determine exact square from "id"
+        var elm = $("[data-square-id=" + id + "]");
+    }
+
+    _constructUtilitySquare (id) {
+        // determine exact square from "id"
+        var elm = $("[data-square-id=" + id + "]");
     }
 }

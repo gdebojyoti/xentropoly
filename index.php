@@ -70,14 +70,7 @@
             </div>
         </section>
 
-        <section id="all-player-details" class="all-player-details">
-            <h2>List of in-game players -</h2>
-            <!-- <div class="player-details" data-player-details="D3XT3R">
-                <span class="player-name">D3XT3R</span>
-                <span class="player-funds">1500</span>
-                <span class="player-squares">0, 1, 3</span>
-            </div> -->
-        </section>
+        <player-details></player-details>
 
         <section id="modal" data-modal-type="mortgage-properties" class="modal-wrapper">
             <div class="modal">
@@ -101,6 +94,7 @@
         </section>
 
         <script src="js/libs/jquery-3.2.1.min.js"></script>
+        <script src="js/libs/webcomponents-lite.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 
         <script src="js/_env.js"></script>
@@ -111,8 +105,11 @@
         <script src="js/services/messengerService.js"></script>
         <script src="js/services/uiService.js"></script>
 
+        <script src="js/models/player.js"></script>
+
         <script src="js/app.js"></script>
         <script src="js/game.js"></script>
-        <script src="js/player.js"></script>
+
+        <script src="js/uicomponents/playerDetails.js"></script>
     </body>
 </html>

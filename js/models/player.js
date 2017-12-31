@@ -23,6 +23,10 @@ class Player {
         return this.squares;
     }
 
+    getColor() {
+        return this.color;
+    }
+
     // move the player by certain number of "spaces"
     moveToPosition(squareId) {
         let oldPosition = this.position,

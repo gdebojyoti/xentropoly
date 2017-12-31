@@ -9,8 +9,8 @@ class SocketService {
             el.innerHTML = 'Server time: ' + timeString;
         });
 
-        this.socket.on("GAME_CREATED", this._gameCreated);
-        this.socket.on("GAME_JOINED", this._gameJoined);
+        this.socket.on("GAME_CREATED", data => this._gameCreated(data));
+        this.socket.on("GAME_JOINED", data => this._gameJoined(data));
         this.socket.on("JOINED_SESSION", data => this._joinedSession(data));
 
         this.socket.on("CHAT_MESSAGE_RECEIVED", data => this._chatMessageReceived(data));
@@ -95,10 +95,20 @@ class SocketService {
 
     _gameCreated(data) {
         console.log(data);
+
+        // trigger message to generate map
+        this.messenger.send(MESSAGES.POPULATE_MAP_DATA, {
+            mapData: data.mapData
+        });
     }
 
     _gameJoined(data) {
         console.log(data);
+
+        // trigger message to generate map
+        this.messenger.send(MESSAGES.POPULATE_MAP_DATA, {
+            mapData: data.mapData
+        });
     }
 
     _joinedSession(data) {
@@ -113,7 +123,7 @@ class SocketService {
     }
 
     _chatMessageReceived(data) {
-        this.messenger.send(MESSAGES.CHAT_MESSAGE_RECEIVED, {
+        this.messenger.send(MESSAGES.UI_CHAT_MESSAGE_RECEIVED, {
             sender: data.sender,
             msg: data.msg
         });
