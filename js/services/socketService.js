@@ -185,7 +185,7 @@ class SocketService {
 
         this.messenger.send(MESSAGES.PROPERTY_MORTGAGED, {
             playerId: data.playerId,
-            squareId: data.squareId
+            squares: data.squares
         });
     }
 

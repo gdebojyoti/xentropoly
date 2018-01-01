@@ -77,6 +77,9 @@ class Game {
         this.messenger.observe(MESSAGES.UI_OPEN_MORTGAGE_MODAL, () => {
             this._uiOpenMortgageModal();
         });
+        this.messenger.observe(MESSAGES.PROPERTY_MORTGAGED, data => {
+            this._uiPropertyMortgaged(data);
+        });
     }
 
     _initPlayer() {
@@ -186,5 +189,11 @@ class Game {
     // open mortgage modal, showing current player's properties
     _uiOpenMortgageModal () {
         this.uiService.openMortgageModal(this.mapData, this.playersData[this.playerName]);
+    }
+
+    // open mortgage modal, showing current player's properties
+    _uiPropertyMortgaged (data) {
+        console.log(data);
+        this.uiService.propertyMortgaged(data.squares);
     }
 }

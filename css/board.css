@@ -1,0 +1,131 @@
+/* board styles */
+
+/* container for board & chat */
+.board-and-chat {
+    width: 100%;
+    height: calc(100% - 70px - 150px);
+    padding: 40px 0 40px 40px;
+}
+
+.board {
+    float: left;
+
+    width: calc(100% - 300px - 30px);
+    height: 100%;
+}
+
+.square {
+    position: relative;
+    float: left;
+
+    width: calc(100% / 11 - 10px);
+    height: calc(25% - 2 * 5px);
+    margin: 5px;
+    border-radius: 2px;
+
+    background-color: #fff;
+
+    box-shadow: 0 0 3px rgba(0,0,0,0.5);
+    overflow: hidden;
+
+    transition: transform ease .5s;
+}
+.square.reverse-order {
+    float: right;
+}
+.square.go-block {
+    height: calc(100% - 2 * 5px);
+
+    background-color: #bdc3c7;
+}
+.square.peril-block {
+    height: calc(50% - 2 * 5px);
+}
+.square>div {
+    pointer-events: none;
+}
+.square .property-band {
+    width: 100%;
+    height: 35px;
+}
+.square .property-name {
+    width: 100%;
+    height: 35px;
+
+    font-size: 14px;
+    line-height: 35px;
+    text-align: center;
+    text-transform: uppercase;
+}
+.square .property-price {
+    position: absolute;
+    bottom: 0;
+
+    width: 100%;
+    height: 35px;
+
+    font-size: 13px;
+    line-height: 35px;
+    text-align: center;
+}
+.square .property-owner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+
+    width: 50px;
+    height: 50px;
+    border: 3px solid #000;
+
+    background-color: #f00;
+
+    opacity: .3;
+}
+
+/* Mortgaged squares */
+
+.square.mortgaged {
+    transform: scale(.9) rotateY(180deg);
+    /* transform: rotate3d(0,1,0,180deg); */
+}
+.square .mortgaged-view {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    transform: rotateY(-180deg);
+
+    width: 100%;
+    height: 100%;
+    border: 5px solid #fff;
+
+    font-size: 12px;
+    color: #fff;
+    background-color: #2c3e50;
+    background-image: linear-gradient(-45deg, #e74c3c, #f39c12);
+
+    opacity: 0;
+
+    transition: opacity 0s ease .15s;
+}
+.square .mortgaged-view div {
+    width: 100%;
+
+    text-align: center;
+}
+/* "MORTGAGED" label */
+.square .mortgaged-view div:nth-child(1) {
+    margin-top: 40px;
+
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.square .mortgaged-view div:nth-child(2) {
+    margin-top: 15px;
+
+    font-size: 18px;
+}
+.square.mortgaged .mortgaged-view {
+    opacity: 1;
+}

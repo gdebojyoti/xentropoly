@@ -71,8 +71,17 @@ class UiService {
 
     updateSquareOwner(squareId, color) {
         // determine exact square from "id"
-        var elm = $("[data-square-id=" + squareId + "]");
+        let elm = $("[data-square-id=" + squareId + "]");
         elm.append("<div class='property-owner' style='background-color: " + color + "'></div>");
+    }
+
+    propertyMortgaged(squares) {
+        for (let squareId of squares) {
+            // determine exact square from "id"
+            let elm = $("[data-square-id=" + squareId + "]");
+            elm.addClass("mortgaged");
+
+        }
     }
 
 
@@ -237,7 +246,7 @@ class UiService {
         for (var i = 0, noOfSquares = 40; i < noOfSquares; i++) {
             switch (squares[i].type) {
                 case "PROPERTY":
-                    this._constructPropertySquare(i, squares[i].propertyName, propertyCodes[squares[i].propertyGroupId].color, squares[i].price, squares[i].rent);
+                    this._constructPropertySquare(i, squares[i].propertyName, propertyCodes[squares[i].propertyGroupId].color, squares[i].price, squares[i].rent, squares[i].mortgage);
                     break;
                 case "TREASURE":
                     this._constructTreasureSquare(i);
@@ -248,7 +257,7 @@ class UiService {
         }
     }
 
-    _constructPropertySquare (id, name, color, price, rent) {
+    _constructPropertySquare (id, name, color, price, rent, mortgage) {
         // determine exact square from "id"
         var elm = $("[data-square-id=" + id + "]");
 
@@ -256,6 +265,10 @@ class UiService {
         <div class='property-band' style='background-color: ` + color + `'></div>
         <div class='property-name'>` + name + `</div>
         <div class='property-price'>$` + price + ` / $` + rent + `</div>
+        <div class='mortgaged-view'>
+            <div>` + name + `</div>
+            <div>$ ` + mortgage + `</div>
+        </div>
         `;
 
         elm.html(contents);
