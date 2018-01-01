@@ -54,11 +54,11 @@ class SocketService {
     }
 
     // propose a trade with tradeWithPlayerId
-    proposeTrade(tradeWithPlayerId, offer, receive) {
+    proposeTrade(tradeWithPlayerId, offered, requested) {
         this.socket.emit("TRADE_PROPOSAL_INITIATED", {
             tradeWithPlayerId: tradeWithPlayerId,
-            offer: offer,
-            receive: receive
+            offered: offered,
+            requested: requested
         });
     }
 
@@ -175,8 +175,8 @@ class SocketService {
         this.messenger.send(MESSAGES.TRADE_PROPOSAL_RECEIVED, {
             proposedBy: data.proposedBy,
             proposedTo: data.proposedTo,
-            offer: data.offer,
-            receive: data.receive
+            offered: data.offered,
+            requested: data.requested
         });
     }
 

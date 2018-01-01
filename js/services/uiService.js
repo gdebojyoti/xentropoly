@@ -1,11 +1,19 @@
+/*jshint loopfunc:true */
+
 class UiService {
     constructor(messengerService, socketService) {
         this.messengerService = messengerService;
         this.socketService = socketService;
 
         this.playerName = "";
+        this.tradeWithPlayerId = ""; // id of player to whom trade is to be proposed
+
         this.isChatWindowOpen = true;
 
+        this.propertiesOfferedForTrade = [];
+        this.propertiesRequestedForTrade = [];
+        this.cashOfferedForTrade = [];
+        this.cashRequestedForTrade = [];
         this.propertiesForMortgage = [];
 
         this._observe();
@@ -47,12 +55,68 @@ class UiService {
     }
 
     // open mortgage modal, showing current player's list of properties that can be mortgaged
+    openTradeModal(mapData, allPlayersData) {
+        // display modal
+        $("[data-modal-type=initiate-trade]").addClass("show-modal");
+
+        // empty & show player list
+        $("[data-modal-type=initiate-trade] [data-player-list]").empty().show();
+
+        // empty & hide self & opponent property lists
+        $("[data-modal-type=initiate-trade] [data-my-properties]").empty().hide();
+        $("[data-modal-type=initiate-trade] [data-opponent-properties]").empty().hide();
+
+        this._resetTradeProposal();
+
+        // populate list of properties belonging to current player
+        $("[data-modal-type=initiate-trade] [data-my-properties]").append('<input class="mortgage-modal__property" id="cashOfferedForTrade" placeholder="Cash from ' + this.playerName + '">');
+        for (let square of allPlayersData[this.playerName].squares) {
+            $("[data-modal-type=initiate-trade] [data-my-properties]")
+                    .append('<div class="mortgage-modal__property" data-property-id=' + square + '>' + mapData.squares[square].propertyName + '</div>');
+        }
+
+        // populate list of opponent players
+        for (let playerName in allPlayersData) {
+            // ignore self (this.playerName should not appear in opponent players' list)
+            if (allPlayersData.hasOwnProperty(playerName) && playerName !== this.playerName) {
+                let playerElm = $('<div class="mortgage-modal__property" data-property-id=' + playerName + '>' + playerName + '</div>');
+
+                // add player to list
+                $("[data-modal-type=initiate-trade] [data-player-list]").append(playerElm);
+
+                // on clicking a particular player: hide players list, show self & opponent properties, reset trade proposal
+                playerElm.on("click", () => {
+                    this.tradeWithPlayerId = playerName;
+
+                    this._resetTradeProposal();
+
+                    // hide player list
+                    $("[data-modal-type=initiate-trade] [data-player-list]").hide();
+
+                    // clear existing list of opponent properties
+                    $("[data-modal-type=initiate-trade] [data-opponent-properties]").empty();
+
+                    // populate opponent property list
+                    $("[data-modal-type=initiate-trade] [data-opponent-properties]").append('<input class="mortgage-modal__property" id="cashRequestedForTrade" placeholder="Cash from ' + playerName + '">');
+                    for (let square of allPlayersData[playerName].squares) {
+                        $("[data-modal-type=initiate-trade] [data-opponent-properties]")
+                                .append('<div class="mortgage-modal__property" data-property-id=' + square + '>' + mapData.squares[square].propertyName + '</div>');
+                    }
+
+                    // display self & opponent property lists
+                    $("[data-modal-type=initiate-trade] [data-my-properties]").show();
+                    $("[data-modal-type=initiate-trade] [data-opponent-properties]").show();
+
+                });
+            }
+        }
+    }
+
+    // open mortgage modal, showing current player's list of properties that can be mortgaged
     openMortgageModal(mapData, playerDetails) {
         $("[data-modal-type=mortgage-properties]").addClass("show-modal");
 
         this.propertiesForMortgage = [];
-
-        console.log(playerDetails, mapData);
 
         // populate list of properties
         for (let square of playerDetails.squares) {
@@ -129,7 +193,6 @@ class UiService {
 
         // request to pay off mortgage on clicking "Unmortgage" button in modal
         $("[data-modal-type=unmortgage-properties] [data-modal-button=unmortgage]").on("click", () => {
-            console.log("Paying off mortgages...");
             this.socketService.requestUnmortgage(6);
         });
 
@@ -138,19 +201,11 @@ class UiService {
             $("[data-modal-type=unmortgage-properties]").removeClass("show-modal");
         });
 
-        // // propose trade on clicking "Trade" button
-        // $("[data-control=trade]").on("click", () => {
-        //     let offer = {
-        //         squares: [0, 1],
-        //         cash: 23
-        //     };
-        //     let receive = {
-        //         squares: [2, 5],
-        //         cash: 300
-        //     };
-        //     this.socketService.proposeTrade("D3XT3RGRNDLWLD", offer, receive);
-        // });
+        this._initTradeModal();
     }
+
+
+    // Modals
 
     // define mortgage modal behaviour and content
     _initMortage () {
@@ -203,6 +258,108 @@ class UiService {
 
     }
 
+    _initTradeModal () {
+        // open trade modal on clicking "Trade" button
+        $("[data-control=trade]").on("click", () => {
+            this.messengerService.send(MESSAGES.UI_OPEN_TRADE_MODAL);
+        });
+
+        // propose trade on clicking "Offer" button
+        $("[data-modal-type=initiate-trade] [data-modal-button=offer]").on("click", () => {
+
+            // can trade only with an opponent player
+            if (!this.tradeWithPlayerId || this.tradeWithPlayerId === this.playerName) {
+                alert("Select a player to trade with, dumbass!");
+                return;
+            }
+
+            let offered = {
+                squares: this.propertiesOfferedForTrade,
+                cash: this.cashOfferedForTrade
+            };
+            let requested = {
+                squares: this.propertiesRequestedForTrade,
+                cash: this.cashRequestedForTrade
+            };
+
+            this.socketService.proposeTrade(this.tradeWithPlayerId, offered, requested);
+
+        });
+
+        // close trade modal on clicking "Cancel" button
+        $("[data-modal-type=initiate-trade] [data-modal-button=cancel]").on("click", () => {
+            $("[data-modal-type=initiate-trade]").removeClass("show-modal");
+        });
+
+        // display player list on clicking "Trade with different player" button
+        $("[data-modal-type=initiate-trade] [data-modal-button=back]").on("click", () => {
+            // reset tradeWithPlayerId
+            this.tradeWithPlayerId = "";
+            // show player list
+            $("[data-modal-type=initiate-trade] [data-player-list]").show();
+            // hide self & opponent property lists
+            $("[data-modal-type=initiate-trade] [data-my-properties]").hide();
+            $("[data-modal-type=initiate-trade] [data-opponent-properties]").hide();
+        });
+
+        // select/ deselect property to be offered
+        $("[data-modal-type=initiate-trade] [data-my-properties]").on("click", "[data-property-id]", e => {
+            let prop = $(e.target),
+                propId = parseInt(prop.attr("data-property-id"));
+
+            let index = this.propertiesOfferedForTrade.indexOf(propId);
+
+            if (index < 0) {
+                this.propertiesOfferedForTrade.push(propId);
+                $(prop).addClass("property-mortgaged");
+            } else {
+                this.propertiesOfferedForTrade.splice(index, 1);
+                $(prop).removeClass("property-mortgaged");
+            }
+        });
+
+        // select/ deselect property to be requested
+        $("[data-modal-type=initiate-trade] [data-opponent-properties]").on("click", "[data-property-id]", e => {
+            let prop = $(e.target),
+                propId = parseInt(prop.attr("data-property-id"));
+
+            let index = this.propertiesRequestedForTrade.indexOf(propId);
+
+            if (index < 0) {
+                this.propertiesRequestedForTrade.push(propId);
+                $(prop).addClass("property-mortgaged");
+            } else {
+                this.propertiesRequestedForTrade.splice(index, 1);
+                $(prop).removeClass("property-mortgaged");
+            }
+        });
+
+        // cash to be offered
+        $("[data-modal-type=initiate-trade] [data-my-properties]").on("keyup", "#cashOfferedForTrade", e => {
+            let cash = $("#cashOfferedForTrade").val();
+            $("#cashOfferedForTrade").val(cash >= 0 ? cash : 0);
+            this.cashOfferedForTrade = parseInt(cash) || 0;
+        });
+
+        // cash to be requested
+        $("[data-modal-type=initiate-trade] [data-opponent-properties]").on("keyup", "#cashRequestedForTrade", e => {
+            let cash = $("#cashRequestedForTrade").val();
+            $("#cashRequestedForTrade").val(cash >= 0 ? cash : 0);
+            this.cashRequestedForTrade = parseInt(cash) || 0;
+        });
+    }
+
+    // reset properties & cash to be traded
+    _resetTradeProposal() {
+        this.propertiesOfferedForTrade = [];
+        this.propertiesRequestedForTrade = [];
+        this.cashOfferedForTrade = 0;
+        this.cashRequestedForTrade = 0;
+    }
+
+
+    // Chat
+
     // show sent messages in chat window
     _showSentMessages(msg) {
         let chatMessages = $("#chat-messages");
@@ -241,9 +398,12 @@ class UiService {
         }
     }
 
+
+    // Game grid
+
     // construct all squares in grid
     _constructSquares (squares, propertyCodes) {
-        for (var i = 0, noOfSquares = 40; i < noOfSquares; i++) {
+        for (let i = 0, noOfSquares = 40; i < noOfSquares; i++) {
             switch (squares[i].type) {
                 case "PROPERTY":
                     this._constructPropertySquare(i, squares[i].propertyName, propertyCodes[squares[i].propertyGroupId].color, squares[i].price, squares[i].rent, squares[i].mortgage);
@@ -259,9 +419,9 @@ class UiService {
 
     _constructPropertySquare (id, name, color, price, rent, mortgage) {
         // determine exact square from "id"
-        var elm = $("[data-square-id=" + id + "]");
+        let elm = $("[data-square-id=" + id + "]");
 
-        var contents = `
+        let contents = `
         <div class='property-band' style='background-color: ` + color + `'></div>
         <div class='property-name'>` + name + `</div>
         <div class='property-price'>$` + price + ` / $` + rent + `</div>
@@ -276,7 +436,7 @@ class UiService {
 
     _constructTreasureSquare (id) {
         // determine exact square from "id"
-        var elm = $("[data-square-id=" + id + "]");
+        let elm = $("[data-square-id=" + id + "]");
 
         elm.css({
             "background-color": "#ecf0f1"
@@ -287,11 +447,11 @@ class UiService {
 
     _constructInfrastructureSquare (id) {
         // determine exact square from "id"
-        var elm = $("[data-square-id=" + id + "]");
+        let elm = $("[data-square-id=" + id + "]");
     }
 
     _constructUtilitySquare (id) {
         // determine exact square from "id"
-        var elm = $("[data-square-id=" + id + "]");
+        let elm = $("[data-square-id=" + id + "]");
     }
 }

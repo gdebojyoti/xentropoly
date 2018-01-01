@@ -1,7 +1,3 @@
-Immediate::
-Complete trading system
-
-
 UI::
 Roll dice
 Finish turn
@@ -13,6 +9,7 @@ Player stats
 
 
 Priorities::
+Trading
 Mortgage
 Bankruptcy
 Infrastructure, twist & treasure cards

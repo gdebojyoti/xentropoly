@@ -74,6 +74,9 @@ class Game {
             this._movePlayerToPosition(data);
         });
 
+        this.messenger.observe(MESSAGES.UI_OPEN_TRADE_MODAL, () => {
+            this._uiOpenTradeModal();
+        });
         this.messenger.observe(MESSAGES.UI_OPEN_MORTGAGE_MODAL, () => {
             this._uiOpenMortgageModal();
         });
@@ -184,6 +187,11 @@ class Game {
 
         let proposalAccepted = confirm("Accept trade offer from " + data.proposedBy + "?");
         this.socketService.tradeProposalResponded(proposalAccepted);
+    }
+
+    // open trade modal, showing available players
+    _uiOpenTradeModal () {
+        this.uiService.openTradeModal(this.mapData, this.playersData);
     }
 
     // open mortgage modal, showing current player's properties

@@ -31,6 +31,8 @@
     padding: 20px;
 
     background-color: #fff;
+
+    overflow: auto;
 }
 
 /* container for all current properties */
@@ -56,6 +58,7 @@
     padding: 10px;
 
     color: #fff;
+    background-color: #ddd;
 
     cursor: pointer;
 }
