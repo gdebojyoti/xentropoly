@@ -13,6 +13,9 @@ class SocketService {
         this.socket.on("GAME_JOINED", data => this._gameJoined(data));
         this.socket.on("JOINED_SESSION", data => this._joinedSession(data));
 
+        this.socket.on("SESSION_NOT_FOUND", data => console.log(data));
+        this.socket.on("HOST_NOT_FOUND", data => console.log(data));
+
         this.socket.on("CHAT_MESSAGE_RECEIVED", data => this._chatMessageReceived(data));
 
         this.socket.on("PLAYER_MOVED", data => this._playerMoved(data));
@@ -22,6 +25,7 @@ class SocketService {
         this.socket.on("RENT_PAID", data => this._rentPaid(data));
 
         this.socket.on("TRADE_PROPOSAL_RECEIVED", data => this._tradeProposalReceived(data));
+        this.socket.on("TRADE_SUCCESSFUL", data => this._tradeSuccessful(data));
 
         this.socket.on("PROPERTY_MORTGAGED", data => this._propertyMortgaged(data));
         this.socket.on("PROPERTY_UNMORTGAGED", data => this._propertyUnmortgaged(data));
@@ -177,6 +181,17 @@ class SocketService {
             proposedTo: data.proposedTo,
             offered: data.offered,
             requested: data.requested
+        });
+    }
+
+    _tradeSuccessful(data) {
+        console.info(data.msg);
+
+        this.messenger.send(MESSAGES.TRADE_SUCCESSFUL, {
+            proposedBy: data.tradeData.proposedBy,
+            proposedTo: data.tradeData.proposedTo,
+            offered: data.tradeData.offered,
+            requested: data.tradeData.requested
         });
     }
 

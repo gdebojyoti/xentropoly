@@ -20,7 +20,7 @@ class UiService {
         this._initUiElements();
     }
 
-    initialize(playerName, mapData) {
+    initialize(mapData, playerName) {
         console.log(mapData);
         this.playerName = playerName;
 
@@ -125,6 +125,14 @@ class UiService {
         }
     }
 
+    // trade proposal offered to current player
+    tradeProposalReceived(proposedBy) {
+        let isProposalAccepted = confirm("Accept trade offer from " + proposedBy + "?");
+
+        // dispatch above decision via socket to server (and other players)
+        this.socketService.tradeProposalResponded(isProposalAccepted);
+    }
+
     // offer current player the chance to buy property at data.squareId
     offerBuyProperty(propertyName, propertyPrice) {
         let isPropertyPurchased = confirm("Buy " + propertyName + " for " + propertyPrice + "?");
@@ -136,6 +144,9 @@ class UiService {
     updateSquareOwner(squareId, color) {
         // determine exact square from "id"
         let elm = $("[data-square-id=" + squareId + "]");
+        // remove previous owner mark, if any
+        elm.children(".property-owner").remove();
+        // add mark of new owner
         elm.append("<div class='property-owner' style='background-color: " + color + "'></div>");
     }
 
@@ -259,6 +270,9 @@ class UiService {
     }
 
     _initTradeModal () {
+
+        let _this = this; // use in "_closeTradeModal" method
+
         // open trade modal on clicking "Trade" button
         $("[data-control=trade]").on("click", () => {
             this.messengerService.send(MESSAGES.UI_OPEN_TRADE_MODAL);
@@ -284,11 +298,13 @@ class UiService {
 
             this.socketService.proposeTrade(this.tradeWithPlayerId, offered, requested);
 
+            _closeTradeModal();
+
         });
 
         // close trade modal on clicking "Cancel" button
         $("[data-modal-type=initiate-trade] [data-modal-button=cancel]").on("click", () => {
-            $("[data-modal-type=initiate-trade]").removeClass("show-modal");
+            _closeTradeModal();
         });
 
         // display player list on clicking "Trade with different player" button
@@ -347,6 +363,18 @@ class UiService {
             $("#cashRequestedForTrade").val(cash >= 0 ? cash : 0);
             this.cashRequestedForTrade = parseInt(cash) || 0;
         });
+
+        function _closeTradeModal () {
+            // hide modal
+            $("[data-modal-type=initiate-trade]").removeClass("show-modal");
+            // reset tradeWithPlayerId
+            _this.tradeWithPlayerId = "";
+            // empty array
+            _this._resetTradeProposal();
+            // empty property list
+            $("[data-modal-type=initiate-trade] [data-my-properties]").empty();
+        }
+
     }
 
     // reset properties & cash to be traded

@@ -69,6 +69,9 @@ class Game {
         this.messenger.observe(MESSAGES.TRADE_PROPOSAL_RECEIVED, data => {
             this._tradeProposalReceived(data);
         });
+        this.messenger.observe(MESSAGES.TRADE_SUCCESSFUL, data => {
+            this._tradeSuccessful(data);
+        });
 
         this.messenger.observe(MESSAGES.MOVE_TO_POSITION, data => {
             this._movePlayerToPosition(data);
@@ -99,7 +102,7 @@ class Game {
     _initializeUi(data) {
         this.mapData = data;
 
-        this.uiService.initialize(this.playerName, this.mapData);
+        this.uiService.initialize(this.mapData, this.playerName);
     }
 
     // update player list; triggered when a new player joins the session
@@ -167,7 +170,6 @@ class Game {
         let color = this.playersData[data.playerId].getColor();
 
         this.uiService.updateSquareOwner(data.squareId, color);
-        console.log(this.playersData[data.playerId]);
     }
 
     // rent paid by payee to owner
@@ -185,8 +187,49 @@ class Game {
             return;
         }
 
-        let proposalAccepted = confirm("Accept trade offer from " + data.proposedBy + "?");
-        this.socketService.tradeProposalResponded(proposalAccepted);
+        this.uiService.tradeProposalReceived(data.proposedBy);
+    }
+
+    _tradeSuccessful (data) {
+        if (this.playersData[data.proposedBy]) {
+            // assign requested squares to "proposedBy" player; unassign from "proposedTo"; update mark color on squares
+            data.requested.squares.forEach(squareId => {
+                this.playersData[data.proposedBy].assignSquare(squareId);
+                this.playersData[data.proposedTo].unassignSquare(squareId);
+
+                let color = this.playersData[data.proposedBy].getColor();
+                this.uiService.updateSquareOwner(squareId, color);
+            });
+
+            // add net requested funds to "proposedBy" player
+            this.playersData[data.proposedBy].addFunds(data.requested.cash - data.offered.cash);
+        }
+
+        this.uiService.updatePlayerList({
+            name: data.proposedBy,
+            cash: this.playersData[data.proposedBy].getCurrentCash(),
+            squares: this.playersData[data.proposedBy].getCurrentSquares()
+        });
+
+        if (this.playersData[data.proposedTo]) {
+            // assign offered squares to "proposedTo" player; unassign from "proposedBy"; update mark color on squares
+            data.offered.squares.forEach(squareId => {
+                this.playersData[data.proposedTo].assignSquare(squareId);
+                this.playersData[data.proposedBy].unassignSquare(squareId);
+
+                let color = this.playersData[data.proposedTo].getColor();
+                this.uiService.updateSquareOwner(squareId, color);
+            });
+
+            // add net offered funds to "proposedTo" player
+            this.playersData[data.proposedTo].addFunds(data.offered.cash - data.requested.cash);
+        }
+
+        this.uiService.updatePlayerList({
+            name: data.proposedTo,
+            cash: this.playersData[data.proposedTo].getCurrentCash(),
+            squares: this.playersData[data.proposedTo].getCurrentSquares()
+        });
     }
 
     // open trade modal, showing available players

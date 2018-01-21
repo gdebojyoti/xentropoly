@@ -66,6 +66,14 @@ class Player {
         }
     }
 
+    // unassign square from player
+    unassignSquare(squareId) {
+        let index = this.squares.indexOf(squareId);
+        if (index >= 0) {
+            this.squares.splice(index, 1);
+        }
+    }
+
 
     /* Private methods */
 
