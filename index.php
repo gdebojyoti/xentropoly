@@ -79,7 +79,8 @@
 
         <script src="js/libs/jquery-3.2.1.min.js"></script>
         <script src="js/libs/webcomponents-lite.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+        <script src="js/libs/redux-3.7.2.min.js"></script>
+        <script src="js/libs/socket.io-2.0.4.min.js"></script>
 
         <script src="js/_env.js"></script>
 
