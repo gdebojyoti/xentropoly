@@ -61,6 +61,14 @@ body {
 
     cursor: pointer;
 }
+.control-button.primary-button {
+    border-left-color: #27ae60;
+    background-color: #2ecc71;
+}
+.control-button.alert-button {
+    border-left-color: #c0392b;
+    background-color: #e74c3c;
+}
 
 
 /* player dot (temporary) */

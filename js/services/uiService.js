@@ -222,9 +222,13 @@ class UiService {
             }
         });
 
+        // trigger bankruptcy
+        $("[data-control=bankruptcy]").on("click", () => {
+            this.socketService.declareBankruptcy();
+        });
+
         this._initMortage();
         this._initUnmortage();
-
         this._initTradeModal();
     }
 

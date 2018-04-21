@@ -16,6 +16,7 @@ class SocketService {
         this.socket.on("SESSION_NOT_FOUND", data => console.log(data));
         this.socket.on("HOST_NOT_FOUND", data => console.log(data));
 
+        this.socket.on("PLAYER_BANKRUPT", data => this._playerBankrupt(data));
         this.socket.on("CHAT_MESSAGE_RECEIVED", data => this._chatMessageReceived(data));
 
         this.socket.on("PLAYER_MOVED", data => this._playerMoved(data));
@@ -45,6 +46,11 @@ class SocketService {
             playerId: playerId,
             hostPlayerId: hostPlayerId
         });
+    }
+
+    // declare oneself to be bankrupt
+    declareBankruptcy() {
+        this.socket.emit("DECLARE_BANKRUPTCY");
     }
 
     triggerTurn() {
@@ -95,7 +101,7 @@ class SocketService {
     }
 
 
-    /* Priate methods */
+    /* Private methods */
 
     _gameCreated(data) {
         console.log(data);
@@ -124,6 +130,11 @@ class SocketService {
             players: data.players,
             room: data.room
         });
+    }
+
+    _playerBankrupt(data) {
+        // TODO: Handle squares (mortgaged & otherwise) belonging to bankrupt player. Handle board & bottom UI.
+        console.warn(data.msg);
     }
 
     _chatMessageReceived(data) {

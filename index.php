@@ -17,10 +17,11 @@
         <div id="loader" class="loader">Loading..</div>
 
         <section class="controls">
-            <button class="control-button" data-control="roll" title="Click me to roll dice">Roll dice</button>
+            <button class="control-button primary-button" data-control="roll" title="Click me to roll dice">Roll dice</button>
             <button class="control-button" data-control="trade">Trade</button>
             <button class="control-button" data-control="mortgage">Mortgage</button>
             <button class="control-button" data-control="unmortgage">Unmortgage</button>
+            <button class="control-button alert-button" data-control="bankruptcy">Declare bankruptcy</button>
         </section>
 
         <div id="players"></div>

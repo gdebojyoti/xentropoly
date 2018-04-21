@@ -23,6 +23,8 @@ Next level features::
 Counter offers in trade
 Sell to bank
 Timer (time limit)
+Support for playing in multiple rooms simultaneously
+Spectator
 
 
 
