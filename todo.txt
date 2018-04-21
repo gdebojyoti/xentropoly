@@ -1,0 +1,44 @@
+UI::
+Roll dice
+Finish turn
+Trading
+Mortgages
+Houses
+Info cards (for properties)
+Player stats
+
+
+
+Priorities::
+Bankruptcy
+Infrastructure, twist & treasure cards
+Houses
+[DONE]
+Trading
+Mortgage, unmortgage
+
+
+
+Next level features::
+Counter offers in trade
+Sell to bank
+Timer (time limit)
+Support for playing in multiple rooms simultaneously
+Spectator
+
+
+
+Pro level features::
+Mobile version (responsive)
+Facebook/ Google login integration
+Facebook/ Google achievements API
+
+
+
+Testing needed for::
+Mortgage
+
+
+
+Misc TODO::
+Disable UI while one trade is in progress
