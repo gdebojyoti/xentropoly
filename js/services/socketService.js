@@ -73,17 +73,17 @@ class SocketService {
         });
     }
 
-    // request for a property to be mortgaged
+    // request for properties to be mortgaged
     requestMortgage(squares) {
         this.socket.emit("REQUEST_MORTGAGE", {
             squares: squares
         });
     }
 
-    // request for a property mortgage to be paid off
-    requestUnmortgage(squareId) {
+    // request for property mortgages to be paid off
+    requestUnmortgage(squares) {
         this.socket.emit("REQUEST_UNMORTGAGE", {
-            squareId: squareId
+            squares: squares
         });
     }
 
@@ -210,7 +210,8 @@ class SocketService {
 
         this.messenger.send(MESSAGES.PROPERTY_UNMORTGAGED, {
             playerId: data.playerId,
-            squareId: data.squareId
+            squares: data.squares,
+            cash: data.cash
         });
     }
 }

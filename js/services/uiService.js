@@ -15,6 +15,7 @@ class UiService {
         this.cashOfferedForTrade = [];
         this.cashRequestedForTrade = [];
         this.propertiesForMortgage = [];
+        this.propertiesForUnmortgage = [];
 
         this._observe();
         this._initUiElements();
@@ -116,10 +117,31 @@ class UiService {
 
         this.propertiesForMortgage = [];
 
-        // populate list of properties
+        // populate list of unmortgaged properties
         for (let square of playerDetails.squares) {
+            // ignore if property is already mortgaged
+            if (mapData.squares[square].isMortgaged) {
+                continue;
+            }
             $("[data-modal-type=mortgage-properties] [data-my-properties]")
                     .append('<div class="mortgage-modal--property" data-property-id=' + square + '>' + mapData.squares[square].propertyName + '</div>');
+        }
+    }
+    
+    // open unmortgage modal, showing current player's list of properties that are mortgaged
+    openUnmortgageModal(mapData, playerDetails) {
+        $("[data-modal-type=unmortgage-properties]").addClass("show-modal");
+
+        this.propertiesForUnmortgage = [];
+
+        // populate list of mortgaged properties
+        for (let square of playerDetails.squares) {
+            // ignore if property is not mortgaged
+            if (!mapData.squares[square].isMortgaged) {
+                continue;
+            }
+            $("[data-modal-type=unmortgage-properties] [data-my-properties]")
+                    .append('<div class="mortgage-modal--property property-mortgaged" data-property-id=' + square + '>' + mapData.squares[square].propertyName + '</div>');
         }
     }
 
@@ -153,7 +175,14 @@ class UiService {
             // determine exact square from "id"
             let elm = $("[data-square-id=" + squareId + "]");
             elm.addClass("mortgaged");
+        }
+    }
 
+    propertyUnmortgaged(squares) {
+        for (let squareId of squares) {
+            // determine exact square from "id"
+            let elm = $("[data-square-id=" + squareId + "]");
+            elm.removeClass("mortgaged");
         }
     }
 
@@ -194,21 +223,7 @@ class UiService {
         });
 
         this._initMortage();
-
-        // open unmortgage modal on clicking "Unmortgage" button
-        $("[data-control=unmortgage]").on("click", () => {
-            $("[data-modal-type=unmortgage-properties]").addClass("show-modal");
-        });
-
-        // request to pay off mortgage on clicking "Unmortgage" button in modal
-        $("[data-modal-type=unmortgage-properties] [data-modal-button=unmortgage]").on("click", () => {
-            this.socketService.requestUnmortgage(6);
-        });
-
-        // close unmortgage modal
-        $("[data-modal-type=unmortgage-properties] [data-modal-button=cancel]").on("click", () => {
-            $("[data-modal-type=unmortgage-properties]").removeClass("show-modal");
-        });
+        this._initUnmortage();
 
         this._initTradeModal();
     }
@@ -245,7 +260,6 @@ class UiService {
         // request mortgage on clicking "Mortgage" button in modal
         $("[data-modal-type=mortgage-properties] [data-modal-button=mortgage]").on("click", () => {
             if (this.propertiesForMortgage.length) {
-                console.log("Mortgaging properties...", this.propertiesForMortgage);
                 this.socketService.requestMortgage(this.propertiesForMortgage);
             }
             _closeMortgageModal();
@@ -263,6 +277,56 @@ class UiService {
             _this.propertiesForMortgage = [];
             // empty property list
             $("[data-modal-type=mortgage-properties] [data-my-properties]").empty();
+        }
+
+    }
+
+    // define unmortgage modal behaviour and content
+    _initUnmortage () {
+
+        let _this = this; // use in "_closeUnmortgageModal" method
+
+        // open unmortgage modal on clicking "Mortgage" button
+        $("[data-control=unmortgage]").on("click", () => {
+            this.messengerService.send(MESSAGES.UI_OPEN_UNMORTGAGE_MODAL);
+        });
+
+        // select/ deselect property to be unmortgaged
+        $("[data-modal-type=unmortgage-properties] [data-my-properties]").on("click", ".mortgage-modal--property", e => {
+            let prop = $(e.target),
+                propId = prop.attr("data-property-id");
+
+            let index = this.propertiesForUnmortgage.indexOf(propId);
+
+            if (index < 0) {
+                this.propertiesForUnmortgage.push(propId);
+                $(prop).removeClass("property-mortgaged");
+            } else {
+                this.propertiesForUnmortgage.splice(index, 1);
+                $(prop).addClass("property-mortgaged");
+            }
+        });
+
+        // request unmortgage on clicking "Unmortgage" button in modal
+        $("[data-modal-type=unmortgage-properties] [data-modal-button=unmortgage]").on("click", () => {
+            if (this.propertiesForUnmortgage.length) {
+                this.socketService.requestUnmortgage(this.propertiesForUnmortgage);
+            }
+            _closeUnmortgageModal();
+        });
+
+        // cancel & close unmortgage modal
+        $("[data-modal-type=unmortgage-properties] [data-modal-button=cancel]").on("click", () => {
+            _closeUnmortgageModal();
+        });
+
+        function _closeUnmortgageModal () {
+            // hide modal
+            $("[data-modal-type=unmortgage-properties]").removeClass("show-modal");
+            // empty array
+            _this.propertiesForUnmortgage = [];
+            // empty property list
+            $("[data-modal-type=unmortgage-properties] [data-my-properties]").empty();
         }
 
     }

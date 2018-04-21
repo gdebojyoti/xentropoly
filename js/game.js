@@ -83,8 +83,14 @@ class Game {
         this.messenger.observe(MESSAGES.UI_OPEN_MORTGAGE_MODAL, () => {
             this._uiOpenMortgageModal();
         });
+        this.messenger.observe(MESSAGES.UI_OPEN_UNMORTGAGE_MODAL, () => {
+            this._uiOpenUnmortgageModal();
+        });
         this.messenger.observe(MESSAGES.PROPERTY_MORTGAGED, data => {
             this._uiPropertyMortgaged(data);
+        });
+        this.messenger.observe(MESSAGES.PROPERTY_UNMORTGAGED, data => {
+            this._uiPropertyUnmortgaged(data);
         });
     }
 
@@ -176,9 +182,6 @@ class Game {
     _rentPaid (data) {
         this.playersData[data.owner].addFunds(data.rent);
         this.playersData[data.payee].removeFunds(data.rent);
-
-        console.log(this.playersData[data.owner]);
-        console.log(this.playersData[data.payee]);
     }
 
     _tradeProposalReceived (data) {
@@ -243,12 +246,41 @@ class Game {
         this.uiService.openMortgageModal(this.mapData, this.playersData[this.playerName]);
     }
 
-    // open mortgage modal, showing current player's properties
+    // open unmortgage modal, showing current player's properties
+    _uiOpenUnmortgageModal () {
+        this.uiService.openUnmortgageModal(this.mapData, this.playersData[this.playerName]);
+    }
+
+    // mark properties as mortgaged, add funds to player, update bottom list
     _uiPropertyMortgaged (data) {
         this.uiService.propertyMortgaged(data.squares);
 
+        // mark each square as mortgaged
+        data.squares.forEach(squareId => {
+            this.mapData.squares[squareId].isMortgaged = true
+        })
+
         // add funds from mortgaging to player
 		this.playersData[data.playerId].addFunds(data.cash);
+
+        this.uiService.updatePlayerList({
+            name: data.playerId,
+            cash: this.playersData[data.playerId].getCurrentCash(),
+            squares: this.playersData[data.playerId].getCurrentSquares()
+        });
+    }
+
+    // unmark properties as mortgaged, remove funds from player, update bottom list
+    _uiPropertyUnmortgaged (data) {
+        this.uiService.propertyUnmortgaged(data.squares);
+
+        // mark each square as unmortgaged
+        data.squares.forEach(squareId => {
+            this.mapData.squares[squareId].isMortgaged = false
+        })
+
+        // remove funds for paying off mortgage from player
+        this.playersData[data.playerId].removeFunds(data.cash);
 
         this.uiService.updatePlayerList({
             name: data.playerId,

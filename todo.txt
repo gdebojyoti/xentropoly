@@ -10,12 +10,12 @@ Player stats
 
 
 Priorities::
-Mortgage
 Bankruptcy
 Infrastructure, twist & treasure cards
 Houses
 [DONE]
 Trading
+Mortgage, unmortgage
 
 
 
@@ -28,7 +28,7 @@ Timer (time limit)
 
 Pro level features::
 Mobile version (responsive)
-Facebook/ Google integration
+Facebook/ Google login integration
 Facebook/ Google achievements API
 
 

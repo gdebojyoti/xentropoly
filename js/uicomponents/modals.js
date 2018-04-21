@@ -35,10 +35,7 @@ class Modals extends HTMLElement {
         <section id="modal" data-modal-type="unmortgage-properties" class="modal-wrapper">
             <div class="modal">
                 <h3>Payoff your mortgages</h3>
-                <div data-my-properties class="mortgage-modal--property-list">
-                    <div class="mortgage-modal--property property-mortgaged" data-property-id=3>Dhaka</div>
-                    <div class="mortgage-modal--property property-mortgaged" data-property-id=10>Helsinki</div>
-                </div>
+                <div data-my-properties class="mortgage-modal--property-list"></div>
                 <button data-modal-button="unmortgage" class="modal-button modal-save">Unmortgage</button>
                 <button data-modal-button="cancel" class="modal-button modal-cancel">Cancel</button>
             </div>

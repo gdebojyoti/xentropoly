@@ -51,11 +51,13 @@ class Player {
 
     // add funds to player
     addFunds(amount) {
+        amount = parseInt(amount) || 0;
         this.cash += amount;
     }
 
     // remove funds from player
     removeFunds(amount) {
+        amount = parseInt(amount) || 0;
         this.cash -= amount;
     }
 
