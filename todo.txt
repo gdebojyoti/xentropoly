@@ -8,18 +8,22 @@ Info cards (for properties)
 Player stats
 
 
+
 Priorities::
-Trading
 Mortgage
 Bankruptcy
 Infrastructure, twist & treasure cards
 Houses
+[DONE]
+Trading
+
 
 
 Next level features::
 Counter offers in trade
 Sell to bank
 Timer (time limit)
+
 
 
 Pro level features::
@@ -29,11 +33,10 @@ Facebook/ Google achievements API
 
 
 
-
 Testing needed for::
 Mortgage
 
 
 
-
+Misc TODO::
 Disable UI while one trade is in progress

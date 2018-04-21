@@ -38,9 +38,7 @@ class UiService {
             if (playerDetails.cash) {
                 elm.children(".player-funds").html("Cash: $" + playerDetails.cash);
             }
-            if (playerDetails.squares && playerDetails.squares.length) {
-                elm.children(".player-squares").html("Owns: " + playerDetails.squares.join(", "));
-            }
+            elm.children(".player-squares").html("Owns: " + playerDetails.squares && playerDetails.squares.length ? playerDetails.squares.join(", ") : "N/A");
         } else {
             $("#all-player-details").append(`
                 <div class="player-details" data-player-details=` + playerDetails.name + `>
@@ -175,7 +173,7 @@ class UiService {
 
         // roll dice on clicking "Roll dice" button and play sound
         $("[data-control=roll]").on("click", () => {
-            rollDiceAudio.play();
+            // rollDiceAudio.play();
             this.socketService.triggerTurn();
         });
 

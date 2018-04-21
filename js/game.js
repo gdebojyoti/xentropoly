@@ -191,39 +191,40 @@ class Game {
     }
 
     _tradeSuccessful (data) {
-        if (this.playersData[data.proposedBy]) {
-            // assign requested squares to "proposedBy" player; unassign from "proposedTo"; update mark color on squares
-            data.requested.squares.forEach(squareId => {
-                this.playersData[data.proposedBy].assignSquare(squareId);
-                this.playersData[data.proposedTo].unassignSquare(squareId);
+        if (!this.playersData[data.proposedBy] || !this.playersData[data.proposedTo]) {
+			console.error ("Missing player data", this.playersData[data.proposedBy], this.playersData[data.proposedTo]);
+			return;
+		}
 
-                let color = this.playersData[data.proposedBy].getColor();
-                this.uiService.updateSquareOwner(squareId, color);
-            });
+		// assign requested squares to "proposedBy" player; unassign from "proposedTo"; update mark color on squares
+		data.requested.squares.forEach(squareId => {
+			this.playersData[data.proposedBy].assignSquare(squareId);
+			this.playersData[data.proposedTo].unassignSquare(squareId);
 
-            // add net requested funds to "proposedBy" player
-            this.playersData[data.proposedBy].addFunds(data.requested.cash - data.offered.cash);
-        }
+			let color = this.playersData[data.proposedBy].getColor();
+			this.uiService.updateSquareOwner(squareId, color);
+		});
+
+		// add net requested funds to "proposedBy" player
+		this.playersData[data.proposedBy].addFunds(data.requested.cash - data.offered.cash);
+
+		// assign offered squares to "proposedTo" player; unassign from "proposedBy"; update mark color on squares
+		data.offered.squares.forEach(squareId => {
+			this.playersData[data.proposedTo].assignSquare(squareId);
+			this.playersData[data.proposedBy].unassignSquare(squareId);
+
+			let color = this.playersData[data.proposedTo].getColor();
+			this.uiService.updateSquareOwner(squareId, color);
+		});
+
+		// add net offered funds to "proposedTo" player
+		this.playersData[data.proposedTo].addFunds(data.offered.cash - data.requested.cash);
 
         this.uiService.updatePlayerList({
             name: data.proposedBy,
             cash: this.playersData[data.proposedBy].getCurrentCash(),
             squares: this.playersData[data.proposedBy].getCurrentSquares()
         });
-
-        if (this.playersData[data.proposedTo]) {
-            // assign offered squares to "proposedTo" player; unassign from "proposedBy"; update mark color on squares
-            data.offered.squares.forEach(squareId => {
-                this.playersData[data.proposedTo].assignSquare(squareId);
-                this.playersData[data.proposedBy].unassignSquare(squareId);
-
-                let color = this.playersData[data.proposedTo].getColor();
-                this.uiService.updateSquareOwner(squareId, color);
-            });
-
-            // add net offered funds to "proposedTo" player
-            this.playersData[data.proposedTo].addFunds(data.offered.cash - data.requested.cash);
-        }
 
         this.uiService.updatePlayerList({
             name: data.proposedTo,
