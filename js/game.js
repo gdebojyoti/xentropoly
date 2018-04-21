@@ -245,7 +245,15 @@ class Game {
 
     // open mortgage modal, showing current player's properties
     _uiPropertyMortgaged (data) {
-        console.log(data);
         this.uiService.propertyMortgaged(data.squares);
+
+        // add funds from mortgaging to player
+		this.playersData[data.playerId].addFunds(data.cash);
+
+        this.uiService.updatePlayerList({
+            name: data.playerId,
+            cash: this.playersData[data.playerId].getCurrentCash(),
+            squares: this.playersData[data.playerId].getCurrentSquares()
+        });
     }
 }
