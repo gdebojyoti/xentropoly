@@ -67,17 +67,17 @@ class UiService {
         this._resetTradeProposal();
 
         // populate list of properties belonging to current player
-        $("[data-modal-type=initiate-trade] [data-my-properties]").append('<input class="mortgage-modal__property" id="cashOfferedForTrade" placeholder="Cash from ' + this.playerName + '">');
+        $("[data-modal-type=initiate-trade] [data-my-properties]").append('<input class="mortgage-modal--property" id="cashOfferedForTrade" placeholder="Cash from ' + this.playerName + '">');
         for (let square of allPlayersData[this.playerName].squares) {
             $("[data-modal-type=initiate-trade] [data-my-properties]")
-                    .append('<div class="mortgage-modal__property" data-property-id=' + square + '>' + mapData.squares[square].propertyName + '</div>');
+                    .append('<div class="mortgage-modal--property" data-property-id=' + square + '>' + mapData.squares[square].propertyName + '</div>');
         }
 
         // populate list of opponent players
         for (let playerName in allPlayersData) {
             // ignore self (this.playerName should not appear in opponent players' list)
             if (allPlayersData.hasOwnProperty(playerName) && playerName !== this.playerName) {
-                let playerElm = $('<div class="mortgage-modal__property" data-property-id=' + playerName + '>' + playerName + '</div>');
+                let playerElm = $('<div class="mortgage-modal--property" data-property-id=' + playerName + '>' + playerName + '</div>');
 
                 // add player to list
                 $("[data-modal-type=initiate-trade] [data-player-list]").append(playerElm);
@@ -95,10 +95,10 @@ class UiService {
                     $("[data-modal-type=initiate-trade] [data-opponent-properties]").empty();
 
                     // populate opponent property list
-                    $("[data-modal-type=initiate-trade] [data-opponent-properties]").append('<input class="mortgage-modal__property" id="cashRequestedForTrade" placeholder="Cash from ' + playerName + '">');
+                    $("[data-modal-type=initiate-trade] [data-opponent-properties]").append('<input class="mortgage-modal--property" id="cashRequestedForTrade" placeholder="Cash from ' + playerName + '">');
                     for (let square of allPlayersData[playerName].squares) {
                         $("[data-modal-type=initiate-trade] [data-opponent-properties]")
-                                .append('<div class="mortgage-modal__property" data-property-id=' + square + '>' + mapData.squares[square].propertyName + '</div>');
+                                .append('<div class="mortgage-modal--property" data-property-id=' + square + '>' + mapData.squares[square].propertyName + '</div>');
                     }
 
                     // display self & opponent property lists
@@ -119,7 +119,7 @@ class UiService {
         // populate list of properties
         for (let square of playerDetails.squares) {
             $("[data-modal-type=mortgage-properties] [data-my-properties]")
-                    .append('<div class="mortgage-modal__property" data-property-id=' + square + '>' + mapData.squares[square].propertyName + '</div>');
+                    .append('<div class="mortgage-modal--property" data-property-id=' + square + '>' + mapData.squares[square].propertyName + '</div>');
         }
     }
 
@@ -227,7 +227,7 @@ class UiService {
         });
 
         // select/ deselect property to be mortgaged
-        $("[data-modal-type=mortgage-properties] [data-my-properties]").on("click", ".mortgage-modal__property", e => {
+        $("[data-modal-type=mortgage-properties] [data-my-properties]").on("click", ".mortgage-modal--property", e => {
             let prop = $(e.target),
                 propId = prop.attr("data-property-id");
 

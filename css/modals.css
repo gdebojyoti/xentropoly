@@ -36,19 +36,19 @@
 }
 
 /* container for all current properties */
-.mortgage-modal__property_list {
+.mortgage-modal--property-list {
     margin: 15px 0;
 }
 
 /* individual property */
-.mortgage-modal__property {
+.mortgage-modal--property {
     margin: 5px 0;
     padding: 10px;
     border: 1px solid gray;
 
     cursor: pointer;
 }
-.mortgage-modal__property.property-mortgaged {
+.mortgage-modal--property.property-mortgaged {
     color: #555;
     font-style: italic;
     background-color: #ccc;
