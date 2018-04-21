@@ -32,3 +32,8 @@ Facebook/ Google achievements API
 
 Testing needed for::
 Mortgage
+
+
+
+
+Disable UI while one trade is in progress
