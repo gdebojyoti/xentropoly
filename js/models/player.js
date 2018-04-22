@@ -117,3 +117,5 @@ class Player {
         return [centerX, centerY];
     }
 }
+
+export default Player;

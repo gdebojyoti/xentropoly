@@ -1,3 +1,6 @@
+import MESSAGES from "../enums/messages.js";
+import ENV from "../_env.js";
+
 class SocketService {
     constructor(messenger) {
         this.messenger = messenger;
@@ -226,3 +229,5 @@ class SocketService {
         });
     }
 }
+
+export default SocketService;

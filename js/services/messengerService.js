@@ -35,3 +35,5 @@ class MessengerService {
         this.inbox.push(inboxData);
     }
 }
+
+export default MessengerService;

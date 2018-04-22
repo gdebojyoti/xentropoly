@@ -18,3 +18,5 @@ const MESSAGES = {
     UI_OPEN_MORTGAGE_MODAL: 403,
     UI_OPEN_UNMORTGAGE_MODAL: 404
 };
+
+export default MESSAGES;

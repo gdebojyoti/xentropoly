@@ -1,5 +1,7 @@
 /*jshint loopfunc:true */
 
+import MESSAGES from "../enums/messages.js";
+
 class UiService {
     constructor(messengerService, socketService) {
         this.messengerService = messengerService;
@@ -551,3 +553,5 @@ class UiService {
         console.log(elm);
     }
 }
+
+export default UiService;
