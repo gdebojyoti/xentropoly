@@ -25,7 +25,7 @@ class MessengerService {
         this.receivers[messageType].push(callback);
     }
 
-    send(messageType, data, external) {
+    send(messageType, data) {
         var messageData = Object.assign({}, data);
 
         var inboxData = {
@@ -35,3 +35,5 @@ class MessengerService {
         this.inbox.push(inboxData);
     }
 }
+
+export default MessengerService;

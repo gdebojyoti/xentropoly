@@ -82,18 +82,7 @@
         <script src="js/libs/webcomponents-lite.js"></script>
         <script src="js/libs/socket.io-2.0.4.min.js"></script>
 
-        <script src="js/_env.js"></script>
-
-        <script src="js/enums/messages.js"></script>
-
-        <script src="js/services/socketService.js"></script>
-        <script src="js/services/messengerService.js"></script>
-        <script src="js/services/uiService.js"></script>
-
-        <script src="js/models/player.js"></script>
-
-        <script src="js/app.js"></script>
-        <script src="js/game.js"></script>
+        <script type="module" src="js/app.js"></script>
 
         <script src="js/uicomponents/playerDetails.js"></script>
         <script src="js/uicomponents/modals.js"></script>

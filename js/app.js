@@ -1,8 +1,12 @@
+import Game from "./game.js";
+import MessengerService from "./services/messengerService.js";
+
+
 var messenger;
 
 $(function() {
     messenger = new MessengerService();
-    let game = new Game(messenger);
+    new Game(messenger);
 
     window.requestAnimationFrame(step);
 

@@ -1,3 +1,8 @@
+import UiService from "./services/uiService.js";
+import SocketService from "./services/socketService.js";
+import Player from "./models/player.js";
+import MESSAGES from "./enums/messages.js";
+
 class Game {
     constructor(messenger) {
         this.messenger = messenger;
@@ -289,3 +294,5 @@ class Game {
         });
     }
 }
+
+export default Game;

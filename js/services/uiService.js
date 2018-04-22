@@ -1,5 +1,7 @@
 /*jshint loopfunc:true */
 
+import MESSAGES from "../enums/messages.js";
+
 class UiService {
     constructor(messengerService, socketService) {
         this.messengerService = messengerService;
@@ -198,7 +200,7 @@ class UiService {
 
     _initUiElements() {
         // initialize roll dice audio
-        let rollDiceAudio = new Audio("assets/audio/rolldice.mp3");
+        // let rollDiceAudio = new Audio("assets/audio/rolldice.mp3");
 
         // roll dice on clicking "Roll dice" button and play sound
         $("[data-control=roll]").on("click", () => {
@@ -417,14 +419,14 @@ class UiService {
         });
 
         // cash to be offered
-        $("[data-modal-type=initiate-trade] [data-my-properties]").on("keyup", "#cashOfferedForTrade", e => {
+        $("[data-modal-type=initiate-trade] [data-my-properties]").on("keyup", "#cashOfferedForTrade", () => {
             let cash = $("#cashOfferedForTrade").val();
             $("#cashOfferedForTrade").val(cash >= 0 ? cash : 0);
             this.cashOfferedForTrade = parseInt(cash) || 0;
         });
 
         // cash to be requested
-        $("[data-modal-type=initiate-trade] [data-opponent-properties]").on("keyup", "#cashRequestedForTrade", e => {
+        $("[data-modal-type=initiate-trade] [data-opponent-properties]").on("keyup", "#cashRequestedForTrade", () => {
             let cash = $("#cashRequestedForTrade").val();
             $("#cashRequestedForTrade").val(cash >= 0 ? cash : 0);
             this.cashRequestedForTrade = parseInt(cash) || 0;
@@ -542,10 +544,14 @@ class UiService {
     _constructInfrastructureSquare (id) {
         // determine exact square from "id"
         let elm = $("[data-square-id=" + id + "]");
+        console.log(elm);
     }
 
     _constructUtilitySquare (id) {
         // determine exact square from "id"
         let elm = $("[data-square-id=" + id + "]");
+        console.log(elm);
     }
 }
+
+export default UiService;
