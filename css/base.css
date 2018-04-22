@@ -1,4 +1,4 @@
-* {
+html, body, section, div, h2, h3, button, input, span {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
