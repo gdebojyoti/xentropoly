@@ -541,11 +541,13 @@ class UiService {
 
     _constructInfrastructureSquare (id) {
         // determine exact square from "id"
-        // let elm = $("[data-square-id=" + id + "]");
+        let elm = $("[data-square-id=" + id + "]");
+        console.log(elm);
     }
 
     _constructUtilitySquare (id) {
         // determine exact square from "id"
-        // let elm = $("[data-square-id=" + id + "]");
+        let elm = $("[data-square-id=" + id + "]");
+        console.log(elm);
     }
 }
