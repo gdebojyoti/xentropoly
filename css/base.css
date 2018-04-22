@@ -6,6 +6,8 @@ html, body, section, div, h2, h3, button, input, span {
 
     font: inherit;
     background: none;
+}
+button:focus, input:focus {
     outline: none;
 }
 

@@ -65,7 +65,6 @@
 }
 
 .chat-message {
-    display: inline-block;
     float: left;
     clear: both;
 
@@ -94,11 +93,9 @@
     background-color: #3498db;
 }
 .chat-from-self .chat-message:nth-child(2) {
-    /* border-radius: 10px; */
     border-top-right-radius: 10px;
 }
 .chat-from-self .chat-message:last-child {
-    /* border-radius: 10px; */
     border-bottom-right-radius: 10px;
 }
 
