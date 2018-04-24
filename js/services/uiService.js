@@ -507,6 +507,9 @@ class UiService {
                 case "TREASURE":
                     this._constructTreasureSquare(i);
                     break;
+                case "INFRASTRUCTURE":
+                    this._constructInfrastructureSquare(i, squares[i].label, propertyCodes[squares[i].propertyGroupId].color, squares[i].price, squares[i].rent, squares[i].mortgage);
+                    break;
                 default:
                     $("[data-square-id=" + i + "]").html(squares[i].type);
             }
@@ -541,10 +544,21 @@ class UiService {
         // elm.html(contents);
     }
 
-    _constructInfrastructureSquare (id) {
+    _constructInfrastructureSquare (id, label, color, price, rent, mortgage) {
         // determine exact square from "id"
         let elm = $("[data-square-id=" + id + "]");
-        console.log(elm);
+
+        let contents = `
+        <div class='property-band' style='background-color: ` + color + `'></div>
+        <div class='property-name'>` + label + `</div>
+        <div class='property-price'>$` + price + ` / $` + rent + `</div>
+        <div class='mortgaged-view'>
+            <div>` + label + `</div>
+            <div>$ ` + mortgage + `</div>
+        </div>
+        `;
+
+        elm.html(contents);
     }
 
     _constructUtilitySquare (id) {
