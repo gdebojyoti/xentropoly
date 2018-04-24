@@ -185,8 +185,22 @@ class Game {
 
     // rent paid by payee to owner
     _rentPaid (data) {
-        this.playersData[data.owner].addFunds(data.rent);
-        this.playersData[data.payee].removeFunds(data.rent);
+        const { owner, payee, rent } = data;
+        
+        this.playersData[owner].addFunds(rent);
+        this.playersData[payee].removeFunds(rent);
+
+        this.uiService.updatePlayerList({
+            name: owner,
+            cash: this.playersData[owner].getCurrentCash(),
+            squares: this.playersData[owner].getCurrentSquares()
+        });
+
+        this.uiService.updatePlayerList({
+            name: payee,
+            cash: this.playersData[payee].getCurrentCash(),
+            squares: this.playersData[payee].getCurrentSquares()
+        });
     }
 
     _tradeProposalReceived (data) {
