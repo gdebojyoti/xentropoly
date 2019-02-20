@@ -91,6 +91,12 @@ class Game {
         this.messenger.observe(MESSAGES.UI_OPEN_UNMORTGAGE_MODAL, () => {
             this._uiOpenUnmortgageModal();
         });
+        this.messenger.observe(MESSAGES.UI_OPEN_CONSTRUCT_HOUSE_MODAL, () => {
+            this._uiOpenConstructHouseModal();
+        });
+        this.messenger.observe(MESSAGES.UI_TRIGGER_STRUCTURE_CONSTRUCTION, data => {
+            this._uiStructureConstruction(data);
+        });
         this.messenger.observe(MESSAGES.PROPERTY_MORTGAGED, data => {
             this._uiPropertyMortgaged(data);
         });
@@ -270,6 +276,24 @@ class Game {
         this.uiService.openUnmortgageModal(this.mapData, this.playersData[this.playerName]);
     }
 
+    // open unmortgage modal, showing current player's properties
+    _uiOpenConstructHouseModal () {
+        this.uiService.openConstructHouseModal(this.mapData, this.playersData[this.playerName]);
+    }
+
+    // determine if structure can be constructed; if yes, send data to server & update UI
+    _uiStructureConstruction (data) {
+        const { structureId, structureParentId } = data;
+        console.log(structureId, structureParentId);
+
+        let newStructures = {}
+
+        // check if canNewStructureBeBuilt
+        const check = canNewStructureBeBuilt.call(this, structureParentId, structureId)
+        // if true, add to builtStructures, newStructures & update UI
+        // send newStructures to server
+    }
+
     // mark properties as mortgaged, add funds to player, update bottom list
     _uiPropertyMortgaged (data) {
         this.uiService.propertyMortgaged(data.squares);
@@ -307,6 +331,46 @@ class Game {
             squares: this.playersData[data.playerId].getCurrentSquares()
         });
     }
+}
+
+function canNewStructureBeBuilt (structureParentId, newStructureId) {
+    // get type & structureParentId from newStructureId
+    console.log(this.mapData)
+    const propertyGroupId = this.mapData.squares[structureParentId].propertyGroupId
+    if (!propertyGroupId) {
+        return false;
+    }
+
+    // check if player owns all properties of same type
+    const check = this.playersData[this.playerName].checkIfOwnsAllPropertiesOfSameType(this.mapData, propertyGroupId);
+    console.log(check);
+    if (!check) {
+        return false;
+    }
+    
+    // if true, check if doPreviousStructuresExist
+    const check2 = doPreviousStructuresExist.call(this, structureParentId, newStructureId, propertyGroupId)
+    // if both are true, return true; else return false
+    
+    return true;
+}
+
+function doPreviousStructuresExist (structureParentId, newStructureId, type) {
+    // fetch all squares of same type from player
+    const squares = this.playersData[this.playerName].getSquaresOfSameType(this.mapData.squares, type);
+    
+    // check if each of those squares have structures built up to newStructureId
+    if (newStructureId > 1) {
+        for (let square of squares) {
+            for (let i = 1; i < newStructureId; i++) {
+                if (!this.builtStructures[square] || this.builtStructures[square].indexOf(i) === -1) {
+                    return false;
+                }
+            }
+        }
+    }
+
+    return true;
 }
 
 export default Game;

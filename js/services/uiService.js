@@ -18,6 +18,7 @@ class UiService {
         this.cashRequestedForTrade = [];
         this.propertiesForMortgage = [];
         this.propertiesForUnmortgage = [];
+        this.buildStructures = {};
 
         this._observe();
         this._initUiElements();
@@ -147,6 +148,34 @@ class UiService {
         }
     }
 
+    // open construct house modal, showing current player's list of properties that are not mortgaged; houses can be built only on properties which are part of an owned & unmortgaged set
+    openConstructHouseModal(mapData, playerDetails) {
+        $("[data-modal-type=construct-houses]").addClass("show-modal");
+
+        this.buildStructures = {};
+
+        // populate list of unmortgaged properties
+        for (let square of playerDetails.squares) {
+            // ignore if property is already mortgaged
+            if (mapData.squares[square].isMortgaged) {
+                continue;
+            }
+            $("[data-modal-type=construct-houses] [data-my-properties]")
+                    .append(`
+                    <div class="mortgage-modal--property" data-property-id=${square}>
+                        <span>${mapData.squares[square].propertyName}</span>
+                        <div class="mortgage-modal--property-house-container">
+                            <span class="mortgage-modal--property-structure property-house" data-structure-id=1></span>
+                            <span class="mortgage-modal--property-structure property-house" data-structure-id=2></span>
+                            <span class="mortgage-modal--property-structure property-house" data-structure-id=3></span>
+                            <span class="mortgage-modal--property-structure property-house" data-structure-id=4></span>
+                            <span class="mortgage-modal--property-structure property-hotel" data-structure-id=5></span>
+                        </div>
+                    </div>
+                    `);
+        }
+    }
+
     // trade proposal offered to current player
     tradeProposalReceived(proposedBy) {
         let isProposalAccepted = confirm("Accept trade offer from " + proposedBy + "?");
@@ -232,6 +261,71 @@ class UiService {
         this._initMortage();
         this._initUnmortage();
         this._initTradeModal();
+        this._constructHouse();
+    }
+
+    _constructHouse () {
+        // open mortgage modal on clicking "Mortgage" button
+        $("[data-control=constructHouse]").on("click", () => {
+            this.messengerService.send(MESSAGES.UI_OPEN_CONSTRUCT_HOUSE_MODAL);
+        });
+
+        // select/ deselect structure to be built
+        $("[data-modal-type=construct-houses] [data-my-properties]").on("click", ".mortgage-modal--property-structure", e => {
+            let structure = $(e.target),
+                structureId = structure.attr("data-structure-id"),
+                structureParent = structure.parent().parent(),
+                structureParentId = structureParent.attr("data-property-id");
+
+            // console.log(structureParentId);
+
+            this.messengerService.send(MESSAGES.UI_TRIGGER_STRUCTURE_CONSTRUCTION, {
+                structureId,
+                structureParentId
+            });
+
+            // if (this.buildStructures[structureParentId]) {
+            //     if (this.buildStructures[structureParentId].indexOf(structureId) >= 0) {
+            //         // remove structure
+            //     } else {
+            //         // add structure
+            //         let previousStructuresExist = true;
+            //         for (let i = 1; i < structureId; i++) {
+            //             if (this.buildStructures[structureParentId].indexOf(i) === -1) {
+            //                 previousStructuresExist = false;
+            //             }
+            //         }
+            //         if (previousStructuresExist) {
+            //             // add structure to corresponding buildStructure
+            //             this.buildStructures[structureParentId].push(structureId);
+            //             // add "structure-selected" class
+            //             $(structure).addClass("structure-selected");
+            //         }
+            //     }
+            // }
+        });
+
+        // request mortgage on clicking "Mortgage" button in modal
+        $("[data-modal-type=mortgage-properties] [data-modal-button=mortgage]").on("click", () => {
+            if (this.propertiesForMortgage.length) {
+                // this.socketService.requestMortgage(this.propertiesForMortgage);
+            }
+            _closeConstructHouseModal();
+        });
+
+        // cancel & close construct house modal
+        $("[data-modal-type=construct-houses] [data-modal-button=cancel]").on("click", () => {
+            _closeConstructHouseModal();
+        });
+
+        const _closeConstructHouseModal = () => {
+            // hide modal
+            $("[data-modal-type=construct-houses]").removeClass("show-modal");
+            // empty array
+            this.propertiesForMortgage = [];
+            // empty property list
+            $("[data-modal-type=construct-houses] [data-my-properties]").empty();
+        }
     }
 
 
