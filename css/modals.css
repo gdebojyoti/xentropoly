@@ -54,6 +54,32 @@
     background-color: #ccc;
 }
 
+/* house */
+.mortgage-modal--property-house-container {
+    display: block;
+    float: right;
+}
+.mortgage-modal--property-structure {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border: 1px solid #ccc;
+
+    cursor: pointer;
+}
+.mortgage-modal--property-structure.property-hotel {
+    border-radius: 50%;
+}
+.mortgage-modal--property-structure.property-house.structure-selected {
+    background-color: #0c0;
+}
+.mortgage-modal--property-structure.property-hotel.structure-selected {
+    background-color: #c00;
+}
+.mortgage-modal--property-structure.property-house.structure-prebuilt {
+    background-color: #777;
+}
+
 .modal-button {
     padding: 10px;
 

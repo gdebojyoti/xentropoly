@@ -11,7 +11,9 @@ Player stats
 
 Priorities::
 Bankruptcy
-Infrastructure, twist & treasure cards
+Tax
+Utility, Infrastructure
+Twist & Treasure cards
 Houses
 [DONE]
 Trading

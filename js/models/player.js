@@ -23,6 +23,16 @@ class Player {
         return this.squares;
     }
 
+    getSquaresOfSameType(allSquares, type) {
+        let squares = [];
+        for (let squareId of this.squares) {
+            if (allSquares[squareId].propertyGroupId === type) {
+                squares.push(squareId);
+            }
+        }
+        return squares;
+    }
+
     getColor() {
         return this.color;
     }
@@ -74,6 +84,19 @@ class Player {
         if (index >= 0) {
             this.squares.splice(index, 1);
         }
+    }
+
+    // check if player owns all properties of same type
+    checkIfOwnsAllPropertiesOfSameType (mapData, type) {
+        for (let square of mapData.squares) {
+            if (square.propertyGroupId === type) {
+                if (this.squares.indexOf(square.id) === -1) {
+                    console.log(square.id)
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 

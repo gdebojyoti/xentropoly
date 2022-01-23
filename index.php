@@ -21,6 +21,8 @@
             <button class="control-button" data-control="trade">Trade</button>
             <button class="control-button" data-control="mortgage">Mortgage</button>
             <button class="control-button" data-control="unmortgage">Unmortgage</button>
+            <button class="control-button" data-control="constructHouse" title="Construct House">CH</button>
+            <button class="control-button" data-control="destroyHouse" title="Destroy House">DH</button>
             <button class="control-button alert-button" data-control="bankruptcy">Declare bankruptcy</button>
         </section>
 
